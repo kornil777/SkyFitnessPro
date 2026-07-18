@@ -28,7 +28,7 @@ const RegisterError: React.FC<RegisterErrorProps> = ({
   return (
     <div className={styles.registerErrorContainer}>
       <img
-        src={`${process.env.PUBLIC_URL}/images/logo.svg`}
+        src="/images/logo.svg"
         alt="SkyFitnessPro"
         className={styles.logo}
       />

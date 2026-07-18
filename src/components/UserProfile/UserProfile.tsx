@@ -51,10 +51,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
     <>
       <div className={styles.userProfile} onClick={handleIconClick}>
         <div className={styles.profileIcon}>
-          <img
-            src={`${process.env.PUBLIC_URL}/images/prof.svg`}
-            alt="Profile"
-          />
+         <img src="/images/prof.svg" alt="Profile" />
         </div>
         <span className={styles.profileData}>{userName}</span>
         <div className={styles.arrowIcon} />

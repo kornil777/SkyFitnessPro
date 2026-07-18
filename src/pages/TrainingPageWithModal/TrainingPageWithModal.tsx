@@ -1,53 +1,32 @@
+// src/pages/TrainingPageWithModal/TrainingPageWithModal.tsx
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import UserProfile from "../../components/UserProfile/UserProfile";
 import styles from "./TrainingPageWithModal.module.css";
 
-interface TrainingPageWithModalProps {
-  userName?: string;
-  userEmail?: string;
-  onLogout?: () => void;
-}
-
-const TrainingPageWithModal: React.FC<TrainingPageWithModalProps> = ({
-  userName = "Анна",
-  userEmail = "anna@mail.com",
-  onLogout,
-}) => {
+const TrainingPageWithModal: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const { user, logout } = useAuth();
+
   const [progressItems, setProgressItems] = useState([
-    {
-      id: 1,
-      question: "Сколько раз вы сделали наклоны вперед?",
-      value: 20,
-    },
-    {
-      id: 2,
-      question: "Сколько раз вы сделали наклоны назад?",
-      value: 0,
-    },
-    {
-      id: 3,
-      question: "Сколько раз вы сделали поднятие ног, согнутых в коленях?",
-      value: 0,
-    },
+    { id: 1, question: "Сколько раз вы сделали наклоны вперед?", value: 20 },
+    { id: 2, question: "Сколько раз вы сделали наклоны назад?", value: 0 },
+    { id: 3, question: "Сколько раз вы сделали поднятие ног, согнутых в коленях?", value: 0 },
   ]);
 
-  const handleProfileClick = () => {
-    navigate("/profile");
-  };
-
-  const handleAddCourse = () => {
-    navigate("/courses");
+  const handleProfileClick = () => navigate("/profile");
+  const handleAddCourse = () => navigate("/");
+  const handleLogout = () => {
+    logout();
+    navigate("/");
   };
 
   const handleInputChange = (id: number, value: string) => {
     const numValue = parseInt(value) || 0;
     setProgressItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, value: numValue } : item,
-      ),
+      prev.map((item) => (item.id === id ? { ...item, value: numValue } : item))
     );
   };
 
@@ -56,158 +35,57 @@ const TrainingPageWithModal: React.FC<TrainingPageWithModalProps> = ({
     navigate(`/training/${id}/success`);
   };
 
-  const handleCloseModal = () => {
-    navigate(`/training/${id}`);
-  };
-
+  const handleCloseModal = () => navigate(`/training/${id}`);
   const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      handleCloseModal();
-    }
+    if (e.target === e.currentTarget) handleCloseModal();
   };
 
   return (
     <div className={styles.page}>
-      {/* Затемнение всей страницы */}
       <div className={styles.pageOverlay} onClick={handleOverlayClick} />
-
-      {/* Логотип (поверх затемнения) */}
-      <img
-        src="/images/logo.svg"
-        alt="SkyFitnessPro"
-        className={styles.logo}
-      />
-
-      {/* Профиль пользователя (поверх затемнения) */}
+      <img src="/images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
       <div className={styles.userProfileWrapper}>
         <UserProfile
-          userName={userName}
-          userEmail={userEmail}
+          userName={user?.name || ""}
+          userEmail={user?.email || ""}
           onProfileClick={handleProfileClick}
-          onLogout={onLogout}
+          onLogout={handleLogout}
           onAddCourse={handleAddCourse}
         />
       </div>
 
-      {/* Основной контент (поверх затемнения) */}
       <div className={styles.contentBlock}>
         <h1 className={styles.title}>Йога</h1>
-
-        {/* Видео */}
         <div className={styles.videoContainer}>
-          <img
-            src="/images/vid1.svg"
-            alt="Video"
-            className={styles.videoImage}
-          />
+          <img src="/images/vid1.svg" alt="Video" className={styles.videoImage} />
         </div>
-
-        {/* Блок с упражнениями */}
         <div className={styles.exercisesBlock}>
           <div className={styles.exercisesContent}>
             <h2 className={styles.exercisesTitle}>Упражнения тренировки 2</h2>
-
             <div className={styles.exercisesGrid}>
-              {/* Первая колонка */}
-              <div className={styles.exerciseColumn}>
-                <div className={styles.exerciseItem}>
-                  <p className={styles.exerciseText}>Наклоны вперед 0%</p>
-                  <div className={styles.progressBarBg}>
-                    <div
-                      className={styles.progressBarFill}
-                      style={{ width: "0%" }}
-                    />
+              {[0, 1, 2].map((col) => (
+                <div key={col} className={styles.exerciseColumn}>
+                  <div className={styles.exerciseItem}>
+                    <p className={styles.exerciseText}>Наклоны вперед 0%</p>
+                    <div className={styles.progressBarBg}>
+                      <div className={styles.progressBarFill} style={{ width: "0%" }} />
+                    </div>
+                  </div>
+                  <div className={styles.exerciseItem}>
+                    <p className={styles.exerciseText}>Наклоны назад 0%</p>
+                    <div className={styles.progressBarBg}>
+                      <div className={styles.progressBarFill} style={{ width: "0%" }} />
+                    </div>
+                  </div>
+                  <div className={styles.exerciseItem}>
+                    <p className={styles.exerciseText}>Поднятие ног, согнутых в коленях 0%</p>
+                    <div className={styles.progressBarBg}>
+                      <div className={styles.progressBarFill} style={{ width: "0%" }} />
+                    </div>
                   </div>
                 </div>
-                <div className={styles.exerciseItem}>
-                  <p className={styles.exerciseText}>Наклоны назад 0%</p>
-                  <div className={styles.progressBarBg}>
-                    <div
-                      className={styles.progressBarFill}
-                      style={{ width: "0%" }}
-                    />
-                  </div>
-                </div>
-                <div className={styles.exerciseItem}>
-                  <p className={styles.exerciseText}>
-                    Поднятие ног, согнутых в коленях 0%
-                  </p>
-                  <div className={styles.progressBarBg}>
-                    <div
-                      className={styles.progressBarFill}
-                      style={{ width: "0%" }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Вторая колонка */}
-              <div className={styles.exerciseColumn}>
-                <div className={styles.exerciseItem}>
-                  <p className={styles.exerciseText}>Наклоны вперед 0%</p>
-                  <div className={styles.progressBarBg}>
-                    <div
-                      className={styles.progressBarFill}
-                      style={{ width: "0%" }}
-                    />
-                  </div>
-                </div>
-                <div className={styles.exerciseItem}>
-                  <p className={styles.exerciseText}>Наклоны назад 0%</p>
-                  <div className={styles.progressBarBg}>
-                    <div
-                      className={styles.progressBarFill}
-                      style={{ width: "0%" }}
-                    />
-                  </div>
-                </div>
-                <div className={styles.exerciseItem}>
-                  <p className={styles.exerciseText}>
-                    Поднятие ног, согнутых в коленях 0%
-                  </p>
-                  <div className={styles.progressBarBg}>
-                    <div
-                      className={styles.progressBarFill}
-                      style={{ width: "0%" }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Третья колонка */}
-              <div className={styles.exerciseColumn}>
-                <div className={styles.exerciseItem}>
-                  <p className={styles.exerciseText}>Наклоны вперед 0%</p>
-                  <div className={styles.progressBarBg}>
-                    <div
-                      className={styles.progressBarFill}
-                      style={{ width: "0%" }}
-                    />
-                  </div>
-                </div>
-                <div className={styles.exerciseItem}>
-                  <p className={styles.exerciseText}>Наклоны назад 0%</p>
-                  <div className={styles.progressBarBg}>
-                    <div
-                      className={styles.progressBarFill}
-                      style={{ width: "0%" }}
-                    />
-                  </div>
-                </div>
-                <div className={styles.exerciseItem}>
-                  <p className={styles.exerciseText}>
-                    Поднятие ног, согнутых в коленях 0%
-                  </p>
-                  <div className={styles.progressBarBg}>
-                    <div
-                      className={styles.progressBarFill}
-                      style={{ width: "0%" }}
-                    />
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
-
             <button className={styles.progressButton} onClick={() => {}}>
               Заполнить свой прогресс
             </button>
@@ -215,10 +93,8 @@ const TrainingPageWithModal: React.FC<TrainingPageWithModalProps> = ({
         </div>
       </div>
 
-      {/* Модальное окно */}
       <div className={styles.modalContainer}>
         <h2 className={styles.modalTitle}>Мой прогресс</h2>
-
         <div className={styles.scrollableContent}>
           {progressItems.map((item) => (
             <div key={item.id} className={styles.progressItem}>
@@ -233,10 +109,7 @@ const TrainingPageWithModal: React.FC<TrainingPageWithModalProps> = ({
             </div>
           ))}
         </div>
-
-        <button className={styles.saveButton} onClick={handleSave}>
-          Сохранить
-        </button>
+        <button className={styles.saveButton} onClick={handleSave}>Сохранить</button>
       </div>
     </div>
   );

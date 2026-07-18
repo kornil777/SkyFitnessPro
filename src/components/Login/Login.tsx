@@ -24,7 +24,7 @@ const Login: React.FC<LoginProps> = ({
   return (
     <div className={styles.loginContainer}>
       <img
-        src={`${process.env.PUBLIC_URL}/images/logo.svg`}
+        src="/images/logo.svg"
         alt="SkyFitnessPro"
         className={styles.logo}
       />

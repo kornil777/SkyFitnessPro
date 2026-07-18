@@ -1,143 +1,61 @@
+// src/pages/CoursePageAuthenticated/CoursePageAuthenticated.tsx
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import UserProfile from "../../components/UserProfile/UserProfile";
 import styles from "./CoursePageAuthenticated.module.css";
 
-interface CoursePageAuthenticatedProps {
-  userName?: string;
-  userEmail?: string;
-  onProfileClick?: () => void;
-  onLogout?: () => void;
-  onAddCourse?: () => void;
-}
-
-const CoursePageAuthenticated: React.FC<CoursePageAuthenticatedProps> = ({
-  userName = "Anna",
-  userEmail = "anna@mail.com",
-  onProfileClick,
-  onLogout,
-  onAddCourse,
-}) => {
-  const { id } = useParams<{ id: string }>();
+const CoursePageAuthenticated: React.FC = () => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const { user, logout } = useAuth();
 
-  const handleProfileClick = () => {
-    navigate("/profile");
-  };
-
+  const handleProfileClick = () => navigate("/profile");
   const handleLogout = () => {
-    if (onLogout) onLogout();
+    logout();
     navigate("/");
   };
-
-  const handleAddCourse = () => {
-    // Переход на страницу профиля (мои курсы)
-    navigate("/profile");
-  };
+  const handleAddCourse = () => navigate("/profile");
 
   return (
     <div className={styles.page}>
-      {/* Логотип */}
-      <img
-        src= "/images/logo.svg"
-        alt="SkyFitnessPro"
-        className={styles.logo}
-      />
-
-      {/* Профиль пользователя - ВАЖНО! Этот блок был потерян */}
+      <img src="/images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
       <div className={styles.userProfileWrapper}>
         <UserProfile
-          userName={userName}
-          userEmail={userEmail}
+          userName={user?.name || ""}
+          userEmail={user?.email || ""}
           onProfileClick={handleProfileClick}
           onLogout={handleLogout}
           onAddCourse={handleAddCourse}
         />
       </div>
-
-      {/* Текст под логотипом */}
       <p className={styles.subtitle}>Онлайн-тренировки для занятий дома</p>
-
-      {/* Картинка курса */}
-      <img
-        src= "/images/card1.svg"
-        alt="Course"
-        className={styles.courseImage}
-      />
-
-      {/* Заголовок "Подойдет для вас, если:" */}
-      <h2 className={`${styles.sectionTitle} ${styles.forYouTitle}`}>
-        Подойдет для вас, если:
-      </h2>
-
-      {/* Ряд из трех блоков */}
+      <img src="/images/card1.svg" alt="Course" className={styles.courseImage} />
+      <h2 className={`${styles.sectionTitle} ${styles.forYouTitle}`}>Подойдет для вас, если:</h2>
       <div className={styles.blocksRow}>
-        <img
-          src= "/images/block.svg"
-          alt="Block 1"
-          className={`${styles.block} ${styles.block1}`}
-        />
-        <img
-          src= "/images/block1.svg"
-          alt="Block 2"
-          className={`${styles.block} ${styles.block2}`}
-        />
-        <img
-          src= "/images/block2.svg"
-          alt="Block 3"
-          className={`${styles.block} ${styles.block3}`}
-        />
+        <img src="/images/block.svg" alt="Block 1" className={`${styles.block} ${styles.block1}`} />
+        <img src="/images/block1.svg" alt="Block 2" className={`${styles.block} ${styles.block2}`} />
+        <img src="/images/block2.svg" alt="Block 3" className={`${styles.block} ${styles.block3}`} />
       </div>
-
-      {/* Заголовок "Направления" */}
-      <h2 className={`${styles.sectionTitle} ${styles.directionsTitle}`}>
-        Направления
-      </h2>
-
-      {/* Картинка направлений */}
-      <img
-        src= "/images/block3.svg"
-        alt="Directions"
-        className={styles.directionsImage}
-      />
-
-      {/* Блок с предложением */}
+      <h2 className={`${styles.sectionTitle} ${styles.directionsTitle}`}>Направления</h2>
+      <img src="/images/block3.svg" alt="Directions" className={styles.directionsImage} />
       <div className={styles.offerBlock}>
-        {/* Белый фон */}
         <div className={styles.whiteBlock} />
-
-        {/* Текстовый контент */}
         <div className={styles.textContent}>
-          <h3 className={styles.offerTitle}>
-            Начните путь <br />к новому телу
-          </h3>
+          <h3 className={styles.offerTitle}>Начните путь <br />к новому телу</h3>
           <p className={styles.offerDescription}>
-            проработка всех групп мышц
-            <br />
-            тренировка суставов
-            <br />
-            улучшение циркуляции крови
-            <br />
-            упражнения заряжают бодростью
-            <br />
+            проработка всех групп мышц<br />
+            тренировка суставов<br />
+            улучшение циркуляции крови<br />
+            упражнения заряжают бодростью<br />
             помогают противостоять стрессам
           </p>
           <button className={styles.offerButton} onClick={handleAddCourse}>
             Добавить курс
           </button>
         </div>
-
-        {/* Картинки справа */}
-        <img
-          src= "/images/block4.svg"
-          alt="Decorative 1"
-          className={styles.block4}
-        />
-        <img
-          src= "/images/block5.svg"
-          alt="Decorative 2"
-          className={styles.block5}
-        />
+        <img src="/images/block4.svg" alt="Decorative 1" className={styles.block4} />
+        <img src="/images/block5.svg" alt="Decorative 2" className={styles.block5} />
       </div>
     </div>
   );

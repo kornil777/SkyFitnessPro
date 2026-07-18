@@ -26,7 +26,7 @@ const LoginError: React.FC<LoginErrorProps> = ({
   return (
     <div className={styles.loginErrorContainer}>
       <img
-        src={`${process.env.PUBLIC_URL}/images/logo.svg`}
+        src="/images/logo.svg"
         alt="SkyFitnessPro"
         className={styles.logo}
       />

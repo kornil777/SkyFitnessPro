@@ -26,7 +26,7 @@ const Register: React.FC<RegisterProps> = ({
   return (
     <div className={styles.registerContainer}>
       <img
-        src={`${process.env.PUBLIC_URL}/images/logo.svg`}
+        src="/images/logo.svg"
         alt="SkyFitnessPro"
         className={styles.logo}
       />
