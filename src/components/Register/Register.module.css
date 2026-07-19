@@ -90,3 +90,18 @@
     margin-top: 5px;
     text-align: center;
 }
+
+.errorText {
+  color: #FF0000;
+  font-size: 14px;
+  margin-top: -8px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.errorMessage {
+  color: #FF0000;
+  font-size: 16px;
+  margin: 10px 0;
+  text-align: center;
+}

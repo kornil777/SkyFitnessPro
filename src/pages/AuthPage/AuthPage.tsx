@@ -1,11 +1,7 @@
-// src/pages/AuthPage/AuthPage.tsx
-// Оставляем без изменений, только убедимся, что интерфейс совпадает
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Login from "../../components/Login/Login";
 import Register from "../../components/Register/Register";
-import LoginError from "../../components/LoginError/LoginError";
-import RegisterError from "../../components/RegisterError/RegisterError";
 import { courses } from "../../data/courses";
 import styles from "./AuthPage.module.css";
 
@@ -16,35 +12,48 @@ interface AuthPageProps {
 
 const AuthPage: React.FC<AuthPageProps> = ({ onLogin, onRegister }) => {
   const [isLogin, setIsLogin] = useState(true);
-  const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLoginSubmit = async (email: string, password: string) => {
-    const success = await onLogin(email, password);
-    if (success) {
-      navigate("/");
-    } else {
-      setErrorMessage("Пароль введен неверно, попробуйте еще раз.");
-      setShowError(true);
+    setIsLoading(true);
+    setErrorMessage(null);
+    try {
+      const success = await onLogin(email, password);
+      if (success) {
+        navigate("/");
+      } else {
+        setErrorMessage("Пароль введен неверно, попробуйте еще раз.");
+      }
+    } catch (error) {
+      setErrorMessage("Произошла ошибка при входе");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleRegisterSubmit = async (email: string, password: string, name: string) => {
-    const success = await onRegister(email, password, name);
-    if (success) {
-      setShowSuccessMessage(true);
-      setIsLogin(true);
-      setShowError(false);
-      setTimeout(() => setShowSuccessMessage(false), 3000);
-    } else {
-      setErrorMessage("Данная почта уже используется. Попробуйте войти.");
-      setShowError(true);
+    setIsLoading(true);
+    setErrorMessage(null);
+    try {
+      const success = await onRegister(email, password, name);
+      if (success) {
+        setShowSuccessMessage(true);
+        setIsLogin(true);
+        setErrorMessage(null);
+        setTimeout(() => setShowSuccessMessage(false), 3000);
+      } else {
+        setErrorMessage("Данная почта уже используется. Попробуйте войти.");
+      }
+    } catch (error) {
+      setErrorMessage("Произошла ошибка при регистрации");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // остальная вёрстка без изменений
   return (
     <div className={styles.page}>
       <img src="/images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
@@ -80,50 +89,38 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin, onRegister }) => {
           <div className={styles.toggleButtons}>
             <button
               className={`${styles.toggleButton} ${isLogin ? styles.activeToggle : ""}`}
-              onClick={() => { setIsLogin(true); setShowError(false); setShowSuccessMessage(false); }}
+              onClick={() => { setIsLogin(true); setErrorMessage(null); setShowSuccessMessage(false); }}
             >
               Вход
             </button>
             <button
               className={`${styles.toggleButton} ${!isLogin ? styles.activeToggle : ""}`}
-              onClick={() => { setIsLogin(false); setShowError(false); setShowSuccessMessage(false); }}
+              onClick={() => { setIsLogin(false); setErrorMessage(null); setShowSuccessMessage(false); }}
             >
               Регистрация
             </button>
           </div>
 
-          {showSuccessMessage && <div className={styles.successMessage}>Регистрация успешна! Теперь вы можете войти.</div>}
+          {showSuccessMessage && (
+            <div className={styles.successMessage}>Регистрация успешна! Теперь вы можете войти.</div>
+          )}
 
           {isLogin ? (
-            showError ? (
-              <LoginError
-                onSwitchToRegister={() => { setIsLogin(false); setShowError(false); }}
-                onClose={() => navigate("/")}
-                errorMessage={errorMessage}
-                onLogin={handleLoginSubmit}
-              />
-            ) : (
-              <Login
-                onSwitchToRegister={() => { setIsLogin(false); setShowError(false); }}
-                onClose={() => navigate("/")}
-                onLogin={handleLoginSubmit}
-              />
-            )
+            <Login
+              onSwitchToRegister={() => { setIsLogin(false); setErrorMessage(null); }}
+              onClose={() => navigate("/")}
+              onLogin={handleLoginSubmit}
+              errorMessage={errorMessage}
+              isLoading={isLoading}
+            />
           ) : (
-            showError ? (
-              <RegisterError
-                onSwitchToLogin={() => { setIsLogin(true); setShowError(false); }}
-                onClose={() => navigate("/")}
-                errorMessage={errorMessage}
-                onRegister={handleRegisterSubmit}
-              />
-            ) : (
-              <Register
-                onSwitchToLogin={() => { setIsLogin(true); setShowError(false); }}
-                onClose={() => navigate("/")}
-                onRegister={handleRegisterSubmit}
-              />
-            )
+            <Register
+              onSwitchToLogin={() => { setIsLogin(true); setErrorMessage(null); }}
+              onClose={() => navigate("/")}
+              onRegister={handleRegisterSubmit}
+              errorMessage={errorMessage}
+              isLoading={isLoading}
+            />
           )}
         </div>
       </div>
