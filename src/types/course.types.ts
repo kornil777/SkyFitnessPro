@@ -1,35 +1,40 @@
 // src/types/course.types.ts
 
-export interface Course {
-  id: number;
-  title: string;
-  image: string;
-  duration?: string;
-  timePerDay?: string;
-  difficulty?: string;
-  description?: string;
-  lessons?: Lesson[];
-  progress?: number;
-}
-
-export interface Lesson {
-  id: number;
-  title: string;
-  videoUrl: string;
-  tasks?: string[];
-}
-
-export interface User {
-  id?: string;
-  email: string;
+export interface Exercise {
+  _id: string;
   name: string;
-  password?: string;
+  quantity: number;
 }
 
-export interface Progress {
-  userId: string;
-  courseId: number;
-  lessonId: number;
-  completed: boolean;
-  value?: number;
+export interface Workout {
+  _id: string;
+  name: string;
+  video: string;
+  exercises: Exercise[];
+}
+
+export interface Course {
+  _id: string;                // ID из БД
+  nameRU: string;             // русское название
+  nameEN: string;             // английское название
+  description: string;
+  directions: string[];       // направления (массив строк)
+  fitting: string[];          // для кого подходит
+  difficulty: string;         // сложность
+  durationInDays: number;
+  dailyDurationInMinutes: {
+    from: number;
+    to: number;
+  };
+  workouts: string[];         // массив ID тренировок
+  image?: string;             // добавим для совместимости с вёрсткой, если будет
+}
+
+// Для ответа /courses/[id]/workouts
+export interface WorkoutDetail extends Workout {} // можно просто использовать Workout
+
+// Для пользователя (для других страниц)
+export interface UserProfile {
+  email: string;
+  selectedCourses: string[];  // массив ID курсов
 }

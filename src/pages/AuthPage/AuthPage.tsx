@@ -1,8 +1,9 @@
+// src/pages/AuthPage/AuthPage.tsx
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Login from "../../components/Login/Login";
 import Register from "../../components/Register/Register";
-import { courses } from "../../data/courses";
 import styles from "./AuthPage.module.css";
 
 interface AuthPageProps {
@@ -25,10 +26,10 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin, onRegister }) => {
       if (success) {
         navigate("/");
       } else {
-        setErrorMessage("Пароль введен неверно, попробуйте еще раз.");
+        setErrorMessage("Неверный email или пароль");
       }
-    } catch (error) {
-      setErrorMessage("Произошла ошибка при входе");
+    } catch {
+      setErrorMessage("Ошибка при входе");
     } finally {
       setIsLoading(false);
     }
@@ -45,10 +46,10 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin, onRegister }) => {
         setErrorMessage(null);
         setTimeout(() => setShowSuccessMessage(false), 3000);
       } else {
-        setErrorMessage("Данная почта уже используется. Попробуйте войти.");
+        setErrorMessage("Пользователь с таким email уже существует");
       }
-    } catch (error) {
-      setErrorMessage("Произошла ошибка при регистрации");
+    } catch {
+      setErrorMessage("Ошибка при регистрации");
     } finally {
       setIsLoading(false);
     }
@@ -56,34 +57,19 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin, onRegister }) => {
 
   return (
     <div className={styles.page}>
+      {/* Логотип */}
       <img src="/images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
-      <button className={styles.loginButton} onClick={() => {}}>Войти</button>
+      {/* Подпись */}
       <p className={styles.subtitle}>Онлайн-тренировки для занятий дома</p>
+      {/* Заголовок */}
       <h1 className={styles.title}>
         Начните заниматься спортом
         <br />и улучшите качество жизни
       </h1>
+      {/* Зеленый блок с текстом */}
       <img src="/images/Group.svg" alt="Измени своё тело за полгода" className={styles.greenBlock} />
-      <div className={styles.coursesGrid}>
-        {courses.map((course) => (
-          <div key={course.id} className={styles.courseCard}>
-            <img src={`/images/${course.image}`} alt={course.title} className={styles.courseImage} />
-            <div className={styles.courseContent}>
-              <h3 className={styles.courseTitle}>{course.title}</h3>
-              <div className={styles.iconsRow}>
-                <img src="/images/25day.svg" alt="25 дней" className={styles.daysIcon} />
-                <img src="/images/20min.svg" alt="20-50 мин/день" className={styles.timeIcon} />
-              </div>
-              <img src="/images/mult.svg" alt="Сложность" className={styles.difficultyIcon} />
-            </div>
-          </div>
-        ))}
-      </div>
-      <button className={styles.scrollButton} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-        <span className={styles.arrow}>↑</span>
-        <span>Наверх</span>
-      </button>
 
+      {/* Оверлей с формой */}
       <div className={styles.authOverlay}>
         <div className={styles.authContainer}>
           <div className={styles.toggleButtons}>
@@ -124,6 +110,15 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin, onRegister }) => {
           )}
         </div>
       </div>
+
+      {/* Кнопка "Наверх" */}
+      <button
+        className={styles.scrollButton}
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      >
+        <span className={styles.arrow}>↑</span>
+        <span>Наверх</span>
+      </button>
     </div>
   );
 };

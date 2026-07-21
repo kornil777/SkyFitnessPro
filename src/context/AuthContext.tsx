@@ -1,10 +1,13 @@
 // src/context/AuthContext.tsx
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import { apiClient } from '../api/apiClient';
 
 interface User {
-  id: string;
+  id?: string;
   email: string;
   name: string;
+  token?: string;
 }
 
 interface AuthContextType {
@@ -32,27 +35,29 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // Пока просто имитация — проверяем, есть ли пользователь в localStorage
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const foundUser = users.find((u: any) => u.email === email && u.password === password);
-    if (foundUser) {
-      const { password: _, ...userWithoutPassword } = foundUser;
-      setUser(userWithoutPassword);
-      localStorage.setItem('user', JSON.stringify(userWithoutPassword));
+    try {
+      const response = await apiClient.post<{ token: string }>('/api/fitness/auth/login', { email, password });
+      // Предполагаем, что токен приходит, но email и имя мы не получаем. Можно запросить /users/me.
+      // Пока сохраняем только email и токен
+      const userData: User = { email, token: response.token, name: email.split('@')[0] };
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
       return true;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
     }
-    return false;
   };
 
   const register = async (email: string, password: string, name: string): Promise<boolean> => {
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    if (users.some((u: any) => u.email === email)) {
-      return false; // пользователь уже существует
+    try {
+      await apiClient.post('/api/fitness/auth/register', { email, password });
+      // После регистрации можно автоматически войти или попросить войти
+      return true;
+    } catch (error) {
+      console.error('Register error:', error);
+      return false;
     }
-    const newUser = { id: Date.now().toString(), email, password, name };
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    return true;
   };
 
   const logout = () => {

@@ -1,3 +1,5 @@
+// src/App.tsx
+
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
@@ -18,24 +20,16 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Публичные маршруты */}
-        <Route
-          path="/"
-          element={
-            <CoursesPage
-              isAuthenticated={!!user}
-              onLoginClick={() => {}} // пока заглушка, но CoursesPage будет использовать useAuth
-              onLogout={logout}
-            />
-          }
-        />
-        <Route
-          path="/auth"
-          element={<AuthPage onLogin={login} onRegister={register} />}
-        />
+        {/* Главная публичная страница — CoursesPage теперь не принимает пропсы, всё берёт из контекста */}
+        <Route path="/" element={<CoursesPage />} />
+
+        {/* Страница авторизации */}
+        <Route path="/auth" element={<AuthPage onLogin={login} onRegister={register} />} />
+
+        {/* Публичная страница курса (неавторизованный) */}
         <Route path="/course/:id" element={<CoursePage />} />
 
-        {/* Приватные маршруты */}
+        {/* Приватные страницы */}
         <Route
           path="/course/:id/authenticated"
           element={

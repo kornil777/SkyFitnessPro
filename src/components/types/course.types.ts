@@ -5,4 +5,5 @@ export interface Course {
   timePerDay: string;
   difficulty: string;
   image: string;
+  selectedCourses?: string[];
 }
