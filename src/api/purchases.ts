@@ -1,18 +1,17 @@
 // src/api/purchases.ts
 
 import { apiClient } from './apiClient';
-import { getToken } from '../utils/token';
+import type { UserProfileResponse } from '../types/user.types';
 
-// Получить данные пользователя (с его курсами)
-export const fetchUserCourses = async (): Promise<{ selectedCourses?: string[] }> => {
-  const token = getToken();
-  return apiClient.get('/api/fitness/users/me', token || undefined);
+// Получить данные пользователя (включая список курсов)
+export const fetchUserData = (): Promise<UserProfileResponse> => {
+  return apiClient.get<UserProfileResponse>('/api/fitness/users/me');
 };
 
 // Проверить, есть ли курс у пользователя
 export const checkUserHasCourse = async (courseId: string): Promise<boolean> => {
   try {
-    const userData = await fetchUserCourses();
+    const userData = await fetchUserData();
     return userData.selectedCourses?.includes(courseId) || false;
   } catch {
     return false;
@@ -20,15 +19,11 @@ export const checkUserHasCourse = async (courseId: string): Promise<boolean> => 
 };
 
 // Добавить курс
-export const addCourseToUser = async (courseId: string): Promise<void> => {
-  const token = getToken();
-  if (!token) throw new Error('Не авторизован');
-  await apiClient.post('/api/fitness/users/me/courses', { courseId }, token);
+export const addCourseToUser = (courseId: string) => {
+  return apiClient.post('/api/fitness/users/me/courses', { courseId });
 };
 
 // Удалить курс
-export const removeCourseFromUser = async (courseId: string): Promise<void> => {
-  const token = getToken();
-  if (!token) throw new Error('Не авторизован');
-  await apiClient.delete(`/api/fitness/users/me/courses/${courseId}`, token);
+export const removeCourseFromUser = (courseId: string) => {
+  return apiClient.delete(`/api/fitness/users/me/courses/${courseId}`);
 };

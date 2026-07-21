@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { registerSchema} from '../../validation/auth.schema';
+import { registerSchema } from '../../validation/auth.schema';
 import type { RegisterFormData } from '../../validation/auth.schema';
 import styles from './Register.module.css';
 
