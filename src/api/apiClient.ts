@@ -5,8 +5,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL;
 export const apiClient = {
   get: async <T>(endpoint: string, token?: string): Promise<T> => {
     const headers: HeadersInit = {
-      'Content-Type': '',
-      'Accept': 'application/json', // Добавляем Accept
+      'Accept': 'application/json',
     };
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
@@ -20,7 +19,6 @@ export const apiClient = {
   },
   post: async <T>(endpoint: string, data: any, token?: string): Promise<T> => {
     const headers: HeadersInit = {
-      'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
     if (token) {
@@ -39,7 +37,6 @@ export const apiClient = {
   },
   delete: async <T>(endpoint: string, token?: string): Promise<T> => {
     const headers: HeadersInit = {
-      'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
     if (token) {
@@ -57,7 +54,6 @@ export const apiClient = {
   },
   patch: async <T>(endpoint: string, data: any, token?: string): Promise<T> => {
     const headers: HeadersInit = {
-      'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
     if (token) {

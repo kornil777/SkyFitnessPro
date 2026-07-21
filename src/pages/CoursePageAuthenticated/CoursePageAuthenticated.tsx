@@ -30,10 +30,10 @@ const CoursePageAuthenticated: React.FC = () => {
       try {
         const data = await fetchCourseById(id);
         setCourse(data);
-        // Проверяем, добавлен ли курс для пользователя
-        if (user && user.id) {
+        // Проверяем, добавлен ли курс для пользователя (передаём только id курса)
+        if (user) {
           const has = await checkUserHasCourse(id);
-setIsCourseAdded(has);
+          setIsCourseAdded(has);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Ошибка загрузки курса');
@@ -50,7 +50,7 @@ setIsCourseAdded(has);
     navigate('/');
   };
   const handleAddCourse = async () => {
-    if (!user || !user.id || !id) return;
+    if (!id) return;
     setIsAdding(true);
     try {
       await addCourseToUser(id);
@@ -62,7 +62,7 @@ setIsCourseAdded(has);
     }
   };
   const handleRemoveCourse = async () => {
-    if (!user || !user.id || !id) return;
+    if (!id) return;
     try {
       await removeCourseFromUser(id);
       setIsCourseAdded(false);

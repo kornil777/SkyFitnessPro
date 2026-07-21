@@ -49,16 +49,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const register = async (email: string, password: string, name: string): Promise<boolean> => {
-    try {
-      await apiClient.post('/api/fitness/auth/register', { email, password });
-      // После регистрации можно автоматически войти или попросить войти
-      return true;
-    } catch (error) {
-      console.error('Register error:', error);
-      return false;
-    }
-  };
+  const register = async (email: string, password: string, name: string) => {
+  // Регистрация
+  await apiClient.post('/api/fitness/auth/register', { email, password });
+  
+  // Логин (получаем токен)
+  const loginResponse = await apiClient.post<{ token: string }>('/api/fitness/auth/login', { email, password });
+  const token = loginResponse.token;
+  
+  // Сохраняем токен
+  localStorage.setItem('token', token);
+  
+  // Получаем данные пользователя (можно через /users/me)
+  // или создаём локально
+  const userData = { id: Date.now().toString(), email, name };
+  setUser(userData);
+  localStorage.setItem('user', JSON.stringify(userData));
+  
+  return true;
+};
 
   const logout = () => {
     setUser(null);
