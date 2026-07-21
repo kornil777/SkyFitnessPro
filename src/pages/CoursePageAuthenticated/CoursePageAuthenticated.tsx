@@ -30,7 +30,7 @@ const CoursePageAuthenticated: React.FC = () => {
       try {
         const data = await fetchCourseById(id);
         setCourse(data);
-        // Проверяем, добавлен ли курс для пользователя (передаём только id курса)
+        // Проверяем, добавлен ли курс
         if (user) {
           const has = await checkUserHasCourse(id);
           setIsCourseAdded(has);

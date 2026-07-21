@@ -1,11 +1,17 @@
 // src/api/purchases.ts
 
 import { apiClient } from './apiClient';
-import type { UserProfileResponse } from '../types/user.types';
+import type { UserApiResponse } from '../types/user.types';
+import { extractUserData } from '../types/user.types';
 
 // Получить данные пользователя (включая список курсов)
-export const fetchUserData = (): Promise<UserProfileResponse> => {
-  return apiClient.get<UserProfileResponse>('/api/fitness/users/me');
+export const fetchUserData = async (): Promise<UserApiResponse> => {
+  const response = await apiClient.get('/api/fitness/users/me');
+  const data = extractUserData(response);
+  if (!data || !data.email) {
+    throw new Error('Invalid user data structure');
+  }
+  return data;
 };
 
 // Проверить, есть ли курс у пользователя

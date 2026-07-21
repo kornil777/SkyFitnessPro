@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { fetchUserData } from '../../api/purchases';
+import { fetchCourses } from '../../api/courses';
 import UserProfile from '../../components/UserProfile/UserProfile';
 import DeleteIcon from '../../components/DeleteIcon/DeleteIcon';
 import TrainingModal from '../../components/TrainingModal/TrainingModal';
@@ -31,29 +32,33 @@ const ProfilePage: React.FC = () => {
         return;
       }
       try {
+        // 1. Получаем данные пользователя (список ID курсов)
         const userData = await fetchUserData();
         const courseIds = userData.selectedCourses || [];
-        // Здесь нужно получить данные курсов по их ID. 
-        // Пока заглушка: создаём моковые курсы на основе ID.
-        // В реальности нужно сделать запрос к /api/fitness/courses и отфильтровать.
-        // Для демонстрации используем моковые данные (потом заменим на реальные).
-        const mockCourses: CourseWithProgress[] = courseIds.map((id, index) => ({
-          _id: id,
-          nameRU: `Курс ${index + 1}`,
-          nameEN: `Course ${index + 1}`,
-          description: '',
-          directions: [],
-          fitting: [],
-          difficulty: 'Средний',
-          durationInDays: 25,
-          dailyDurationInMinutes: { from: 20, to: 50 },
-          workouts: [],
-          image: 'card1.svg',
+        
+        if (courseIds.length === 0) {
+          setCourses([]);
+          setLoading(false);
+          return;
+        }
+
+        // 2. Получаем все курсы
+        const allCourses = await fetchCourses();
+        
+        // 3. Фильтруем только те, которые есть у пользователя
+        const userCourses = allCourses.filter(course => 
+          courseIds.includes(course._id)
+        );
+
+        // 4. Добавляем прогресс и текст кнопки (пока моковые)
+        const coursesWithProgress: CourseWithProgress[] = userCourses.map((course, index) => ({
+          ...course,
           progress: Math.floor(Math.random() * 100),
           buttonText: index === 0 ? 'Продолжить' : 'Начать тренировки',
           isDeleted: false,
         }));
-        setCourses(mockCourses);
+
+        setCourses(coursesWithProgress);
       } catch (error) {
         console.error('Failed to load user courses:', error);
       } finally {

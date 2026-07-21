@@ -3,6 +3,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { apiClient } from '../api/apiClient';
+import { extractUserData } from '../types/user.types';
+import type { UserApiResponse } from '../types/user.types';
 
 interface User {
   id: string;
@@ -34,15 +36,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (token && savedUserStr) {
         try {
           const savedUser: User = JSON.parse(savedUserStr);
-          // Пробуем получить свежие данные
-          const userData = await apiClient.get('/api/fitness/users/me');
-          console.log('Restore session userData:', userData);
-          
-          // Пытаемся извлечь данные из возможных обёрток
-          const data = extractUserData(userData);
+          const response = await apiClient.get('/api/fitness/users/me');
+          const data = extractUserData(response);
           if (data && data.email) {
             setUser({
-              id: data.id || data._id || savedUser.id || '',
+              id: data._id || data.id || savedUser.id || '',
               email: data.email,
               name: data.name || savedUser.name || '',
               selectedCourses: data.selectedCourses || savedUser.selectedCourses || [],
@@ -51,9 +49,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             // Если данные невалидны, используем сохранённые
             setUser(savedUser);
           }
-        } catch (error) {
-          console.warn('Session restore failed, using saved user', error);
-          // Если запрос упал, используем сохранённого пользователя
+        } catch {
+          // Если запрос упал, используем сохранённого пользователя, если он есть
           try {
             const savedUser: User = JSON.parse(savedUserStr);
             setUser(savedUser);
@@ -69,38 +66,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     restoreSession();
   }, []);
 
-  // Вспомогательная функция для извлечения данных из ответа
-  const extractUserData = (response: any): any => {
-    if (!response) return null;
-    // Если ответ имеет поле user, data или result
-    if (response.user) return response.user;
-    if (response.data) return response.data;
-    if (response.result) return response.result;
-    // Если сам ответ содержит email
-    if (response.email) return response;
-    // Если массив, берём первый
-    if (Array.isArray(response) && response.length > 0) return response[0];
-    return null;
-  };
-
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       const loginResponse = await apiClient.post<{ token: string }>('/api/fitness/auth/login', { email, password });
       const { token } = loginResponse;
       localStorage.setItem('token', token);
       
-      const userData = await apiClient.get('/api/fitness/users/me');
-      console.log('Login userData:', userData);
+      const response = await apiClient.get('/api/fitness/users/me');
+      const data = extractUserData(response);
       
-      const data = extractUserData(userData);
       if (!data || !data.email) {
-        console.warn('No email in userData, using fallback');
-        // Используем данные из запроса, но сохраняем только email из формы
+        // Fallback
         const userObj: User = {
-          id: data?._id || data?.id || '',
-          email: email, // берём из формы
-          name: data?.name || '',
-          selectedCourses: data?.selectedCourses || [],
+          id: '',
+          email: email,
+          name: '',
+          selectedCourses: [],
         };
         setUser(userObj);
         localStorage.setItem('user', JSON.stringify(userObj));
@@ -130,17 +111,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const loginResponse = await apiClient.post<{ token: string }>('/api/fitness/auth/login', { email, password });
       localStorage.setItem('token', loginResponse.token);
       
-      const userData = await apiClient.get('/api/fitness/users/me');
-      console.log('Register userData:', userData);
+      const response = await apiClient.get('/api/fitness/users/me');
+      const data = extractUserData(response);
       
-      const data = extractUserData(userData);
       if (!data || !data.email) {
-        // fallback
+        // Fallback
         const userObj: User = {
-          id: data?._id || data?.id || '',
+          id: '',
           email: email,
           name: name,
-          selectedCourses: data?.selectedCourses || [],
+          selectedCourses: [],
         };
         setUser(userObj);
         localStorage.setItem('user', JSON.stringify(userObj));
@@ -150,7 +130,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const userObj: User = {
         id: data._id || data.id || '',
         email: data.email,
-        name: name, // используем переданное имя
+        name: name,
         selectedCourses: data.selectedCourses || [],
       };
       
