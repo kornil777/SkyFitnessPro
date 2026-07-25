@@ -9,32 +9,41 @@ export interface Exercise {
 export interface Workout {
   _id: string;
   name: string;
-  video: string;
+  video: string; // ссылка на YouTube (embed)
   exercises: Exercise[];
 }
 
 export interface Course {
-  _id: string;                // ID из БД
-  nameRU: string;             // русское название
-  nameEN: string;             // английское название
+  _id: string;
+  nameRU: string;
+  nameEN: string;
   description: string;
-  directions: string[];       // направления (массив строк)
-  fitting: string[];          // для кого подходит
-  difficulty: string;         // сложность
+  directions: string[];
+  fitting: string[];
+  difficulty: string;
   durationInDays: number;
   dailyDurationInMinutes: {
     from: number;
     to: number;
   };
-  workouts: string[];         // массив ID тренировок
-  image?: string;             // добавим для совместимости с вёрсткой, если будет
+  workouts: string[]; // массив ID тренировок
+  image?: string; // для маппинга
 }
 
-// Для ответа /courses/[id]/workouts
-export interface WorkoutDetail extends Workout {} // можно просто использовать Workout
+// Ответ на GET /api/fitness/users/me/progress?courseId=...
+export interface ProgressResponse {
+  courseId: string;
+  courseCompleted: boolean;
+  workoutsProgress: {
+    workoutId: string;
+    workoutCompleted: boolean;
+    progressData: number[]; // массив чисел (повторения для каждого упражнения)
+  }[];
+}
 
-// Для пользователя (для других страниц)
-export interface UserProfile {
-  email: string;
-  selectedCourses: string[];  // массив ID курсов
+// Ответ на GET /api/fitness/users/me/progress?courseId=...&workoutId=...
+export interface WorkoutProgressResponse {
+  workoutId: string;
+  workoutCompleted: boolean;
+  progressData: number[];
 }

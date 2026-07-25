@@ -289,3 +289,9 @@
 .saveButton:hover {
     opacity: 0.9;
 }
+
+.videoIframe {
+  border-radius: 30px;
+  width: 100%;
+  height: 100%;
+}

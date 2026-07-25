@@ -88,10 +88,10 @@
 }
 
 .exercisesGrid {
-    width: 1080px;
-    height: 148px;
-    display: flex;
-    gap: 60px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px; /* отступы между колонками */
+  justify-content: flex-start;
 }
 
 .exerciseColumn {
@@ -103,22 +103,26 @@
 }
 
 .exerciseItem {
-    width: 320px;
-    height: 36px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  flex: 1 1 calc(33.33% - 20px); /* три колонки с отступами */
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .exerciseText {
     width: 320px;
-    height: 20px;
+   
     font-family: 'Roboto', sans-serif;
     font-weight: 400;
     font-size: 18px;
     line-height: 110%;
     color: #000000;
     margin: 0;
+    .exerciseText {
+  white-space: normal; /* разрешить перенос */
+  word-break: break-word;
+}
 }
 
 .progressBarBg {
@@ -157,4 +161,10 @@
 
 .progressButton:hover {
     opacity: 0.9;
+}
+
+.videoIframe {
+  border-radius: 30px;
+  width: 100%;
+  height: 100%;
 }

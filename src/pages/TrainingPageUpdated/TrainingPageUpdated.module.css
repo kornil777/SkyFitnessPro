@@ -126,7 +126,7 @@
 
 .exerciseItem {
     width: 320px;
-    height: 40px;
+    
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -265,4 +265,10 @@
     width: 56.67px;
     height: 56.67px;
     object-fit: contain;
+}
+
+.videoIframe {
+  border-radius: 30px;
+  width: 100%;
+  height: 100%;
 }

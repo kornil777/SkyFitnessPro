@@ -4,6 +4,8 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
+
+// Страницы
 import CoursesPage from './pages/CoursesPage/CoursesPage';
 import AuthPage from './pages/AuthPage/AuthPage';
 import CoursePage from './pages/CoursePage/CoursePage';
@@ -20,16 +22,21 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Главная публичная страница — CoursesPage теперь не принимает пропсы, всё берёт из контекста */}
-        <Route path="/" element={<CoursesPage />} />
+        {/* Публичные маршруты */}
+        <Route
+          path="/"
+          element={<CoursesPage />}
+        />
+        <Route
+          path="/auth"
+          element={<AuthPage onLogin={login} onRegister={register} />}
+        />
+        <Route
+          path="/course/:id"
+          element={<CoursePage />}
+        />
 
-        {/* Страница авторизации */}
-        <Route path="/auth" element={<AuthPage onLogin={login} onRegister={register} />} />
-
-        {/* Публичная страница курса (неавторизованный) */}
-        <Route path="/course/:id" element={<CoursePage />} />
-
-        {/* Приватные страницы */}
+        {/* Приватные маршруты */}
         <Route
           path="/course/:id/authenticated"
           element={
@@ -46,8 +53,10 @@ function App() {
             </PrivateRoute>
           }
         />
+
+        {/* Маршруты тренировок с параметрами courseId и workoutId */}
         <Route
-          path="/training/:id"
+          path="/training/:courseId/:workoutId"
           element={
             <PrivateRoute>
               <TrainingPage />
@@ -55,7 +64,7 @@ function App() {
           }
         />
         <Route
-          path="/training/:id/progress"
+          path="/training/:courseId/:workoutId/progress"
           element={
             <PrivateRoute>
               <TrainingPageWithModal />
@@ -63,7 +72,7 @@ function App() {
           }
         />
         <Route
-          path="/training/:id/success"
+          path="/training/:courseId/:workoutId/success"
           element={
             <PrivateRoute>
               <TrainingPageSuccess />
@@ -71,7 +80,7 @@ function App() {
           }
         />
         <Route
-          path="/training/:id/updated"
+          path="/training/:courseId/:workoutId/updated"
           element={
             <PrivateRoute>
               <TrainingPageUpdated />

@@ -159,9 +159,9 @@
 }
 
 .courseImage {
-    width: 360px;
-    height: 325px;
-    object-fit: cover;
+     width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .courseContent {
@@ -258,13 +258,16 @@
     color: #000000;
     cursor: pointer;
     box-sizing: border-box;
-
+    width: 100%; /* или фиксированная ширина с margin: 0 auto */
+  margin-top: auto; /* чтобы прижать к низу */
 }
 
+
 .imageContainer {
-    position: relative;
     width: 360px;
-    height: 325px;
+  height: 325px;
+  position: relative;
+  overflow: hidden;
 }
 
 .deletedCourse {

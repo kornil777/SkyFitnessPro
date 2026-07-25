@@ -8,6 +8,7 @@ import { fetchCourses } from '../../api/courses';
 import UserProfile from '../../components/UserProfile/UserProfile';
 import DeleteIcon from '../../components/DeleteIcon/DeleteIcon';
 import TrainingModal from '../../components/TrainingModal/TrainingModal';
+import { getCourseImage } from '../../utils/imageMap';
 import type { Course } from '../../types/course.types';
 import styles from './ProfilePage.module.css';
 
@@ -32,7 +33,6 @@ const ProfilePage: React.FC = () => {
         return;
       }
       try {
-        // 1. Получаем данные пользователя (список ID курсов)
         const userData = await fetchUserData();
         const courseIds = userData.selectedCourses || [];
         
@@ -42,18 +42,14 @@ const ProfilePage: React.FC = () => {
           return;
         }
 
-        // 2. Получаем все курсы
         const allCourses = await fetchCourses();
-        
-        // 3. Фильтруем только те, которые есть у пользователя
         const userCourses = allCourses.filter(course => 
           courseIds.includes(course._id)
         );
 
-        // 4. Добавляем прогресс и текст кнопки (пока моковые)
         const coursesWithProgress: CourseWithProgress[] = userCourses.map((course, index) => ({
           ...course,
-          progress: Math.floor(Math.random() * 100),
+          progress: Math.floor(Math.random() * 100), // Временно, потом заменим на реальный прогресс
           buttonText: index === 0 ? 'Продолжить' : 'Начать тренировки',
           isDeleted: false,
         }));
@@ -82,8 +78,15 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleStartTraining = (course: CourseWithProgress) => {
-    setSelectedCourse(course);
-    setIsTrainingModalOpen(true);
+    // Проверяем наличие тренировок
+    if (course.workouts && course.workouts.length > 0) {
+      const firstWorkoutId = course.workouts[0];
+      // Переходим на страницу тренировки с параметрами courseId и workoutId
+      navigate(`/training/${course._id}/${firstWorkoutId}`);
+    } else {
+      console.warn('У курса нет тренировок');
+      // Можно добавить уведомление для пользователя
+    }
   };
 
   const handleCloseTrainingModal = () => {
@@ -92,8 +95,11 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleStartSelectedTrainings = (selectedTrainingIds: number[]) => {
-    console.log('Selected trainings:', selectedTrainingIds);
-    navigate(`/training/${selectedCourse?._id}`);
+    // Эта функция вызывается из модалки выбора тренировок (если она используется)
+    if (selectedCourse && selectedCourse.workouts && selectedCourse.workouts.length > 0) {
+      const firstWorkoutId = selectedCourse.workouts[0];
+      navigate(`/training/${selectedCourse._id}/${firstWorkoutId}`);
+    }
     setIsTrainingModalOpen(false);
   };
 
@@ -143,9 +149,12 @@ const ProfilePage: React.FC = () => {
                 >
                   <div className={styles.imageContainer}>
                     <img
-                      src={`/images/${course.image || 'card1.svg'}`}
+                      src={getCourseImage(course.nameRU)}
                       alt={course.nameRU}
                       className={styles.courseImage}
+                      onError={(e) => {
+                        e.currentTarget.src = '/images/card1.svg';
+                      }}
                     />
                     <DeleteIcon
                       isDeleted={course.isDeleted || false}
