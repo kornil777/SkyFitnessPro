@@ -27,3 +27,7 @@ export const saveWorkoutProgress = (courseId: string, workoutId: string, progres
 export const resetWorkoutProgress = (courseId: string, workoutId: string) => {
   return apiClient.patch(`/api/fitness/courses/${courseId}/workouts/${workoutId}/reset`, {});
 };
+
+export const getCourseWorkouts = (courseId: string): Promise<Workout[]> => {
+  return apiClient.get(`/api/fitness/courses/${courseId}/workouts`);
+};

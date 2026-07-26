@@ -30,7 +30,6 @@ const CoursePageAuthenticated: React.FC = () => {
       try {
         const data = await fetchCourseById(id);
         setCourse(data);
-        // Проверяем, добавлен ли курс
         if (user) {
           const has = await checkUserHasCourse(id);
           setIsCourseAdded(has);
@@ -71,55 +70,82 @@ const CoursePageAuthenticated: React.FC = () => {
     }
   };
 
-  if (loading) return <div>Загрузка курса...</div>;
-  if (error || !course) return <div>Ошибка: {error || 'Курс не найден'}</div>;
+  if (loading) return <div className={styles.loading}>Загрузка курса...</div>;
+  if (error || !course) return <div className={styles.error}>Ошибка: {error || 'Курс не найден'}</div>;
 
   const imageUrl = getCourseImage(course.nameRU);
 
   return (
     <div className={styles.page}>
-      <img src="/images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
-      <div className={styles.userProfileWrapper}>
-        <UserProfile
-          userName={user?.name || ''}
-          userEmail={user?.email || ''}
-          onProfileClick={handleProfileClick}
-          onLogout={handleLogout}
-          onAddCourse={() => {}}
-        />
-      </div>
-      <p className={styles.subtitle}>Онлайн-тренировки для занятий дома</p>
-
-      <img src={imageUrl} alt={course.nameRU} className={styles.courseImage} />
-
-      <h2 className={`${styles.sectionTitle} ${styles.forYouTitle}`}>Подойдет для вас, если:</h2>
-      <div className={styles.blocksRow}>
-        <img src="/images/block.svg" alt="Block 1" className={`${styles.block} ${styles.block1}`} />
-        <img src="/images/block1.svg" alt="Block 2" className={`${styles.block} ${styles.block2}`} />
-        <img src="/images/block2.svg" alt="Block 3" className={`${styles.block} ${styles.block3}`} />
-      </div>
-
-      <h2 className={`${styles.sectionTitle} ${styles.directionsTitle}`}>Направления</h2>
-      <img src="/images/block3.svg" alt="Directions" className={styles.directionsImage} />
-
-      <div className={styles.offerBlock}>
-        <div className={styles.whiteBlock} />
-        <div className={styles.textContent}>
-          <h3 className={styles.offerTitle}>Начните путь <br />к новому телу</h3>
-          <p className={styles.offerDescription}>{course.description || 'Описание курса'}</p>
-          {isCourseAdded ? (
-            <button className={styles.offerButton} onClick={handleRemoveCourse} disabled={isAdding}>
-              Удалить курс
-            </button>
-          ) : (
-            <button className={styles.offerButton} onClick={handleAddCourse} disabled={isAdding}>
-              {isAdding ? 'Добавление...' : 'Добавить курс'}
-            </button>
-          )}
+      <header className={styles.header}>
+        <img src="/images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
+        <div className={styles.userProfileWrapper}>
+          <UserProfile
+            userName={user?.name || ''}
+            userEmail={user?.email || ''}
+            onProfileClick={handleProfileClick}
+            onLogout={handleLogout}
+            onAddCourse={() => {}}
+          />
         </div>
-        <img src="/images/block4.svg" alt="Decorative 1" className={styles.block4} />
-        <img src="/images/block5.svg" alt="Decorative 2" className={styles.block5} />
-      </div>
+      </header>
+
+      <main className={styles.content}>
+        <p className={styles.subtitle}>Онлайн-тренировки для занятий дома</p>
+
+        <img src={imageUrl} alt={course.nameRU} className={styles.courseImage} />
+
+        <h1 className={styles.courseTitle}>{course.nameRU}</h1>
+
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>Подойдет для вас, если:</h2>
+          <ul className={styles.list}>
+            {course.fitting?.map((item, index) => (
+              <li key={index} className={styles.listItem}>{item}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>Направления</h2>
+          <div className={styles.tags}>
+            {course.directions?.map((dir, index) => (
+              <span key={index} className={styles.tag}>{dir}</span>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>Описание</h2>
+          <p className={styles.description}>{course.description}</p>
+        </div>
+
+        <div className={styles.offerBlock}>
+          <div className={styles.offerContent}>
+            <h3 className={styles.offerTitle}>Начните путь <br />к новому телу</h3>
+            <p className={styles.offerDescription}>
+              проработка всех групп мышц<br />
+              тренировка суставов<br />
+              улучшение циркуляции крови<br />
+              упражнения заряжают бодростью<br />
+              помогают противостоять стрессам
+            </p>
+            {isCourseAdded ? (
+              <button className={styles.offerButton} onClick={handleRemoveCourse} disabled={isAdding}>
+                Удалить курс
+              </button>
+            ) : (
+              <button className={styles.offerButton} onClick={handleAddCourse} disabled={isAdding}>
+                {isAdding ? 'Добавление...' : 'Добавить курс'}
+              </button>
+            )}
+          </div>
+          <div className={styles.decorImages}>
+            <img src="/images/block4.svg" alt="Decorative 1" className={styles.block4} />
+            <img src="/images/block5.svg" alt="Decorative 2" className={styles.block5} />
+          </div>
+        </div>
+      </main>
     </div>
   );
 };

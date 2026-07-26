@@ -108,6 +108,12 @@ const TrainingPageSuccess: React.FC = () => {
         <div className={styles.iconContainer}>
           <div className={styles.successIcon}>
             <img src="/images/br1.svg" alt="Success" />
+            <button 
+  className={styles.backButton}
+  onClick={() => navigate(`/course/${courseId}/authenticated`)}
+>
+  Вернуться к тренировкам
+</button>
           </div>
         </div>
       </div>

@@ -78,16 +78,8 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleStartTraining = (course: CourseWithProgress) => {
-    // Проверяем наличие тренировок
-    if (course.workouts && course.workouts.length > 0) {
-      const firstWorkoutId = course.workouts[0];
-      // Переходим на страницу тренировки с параметрами courseId и workoutId
-      navigate(`/training/${course._id}/${firstWorkoutId}`);
-    } else {
-      console.warn('У курса нет тренировок');
-      // Можно добавить уведомление для пользователя
-    }
-  };
+  navigate(`/course/${course._id}/choose-workout`);
+};
 
   const handleCloseTrainingModal = () => {
     setIsTrainingModalOpen(false);

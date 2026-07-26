@@ -11,6 +11,7 @@ import AuthPage from './pages/AuthPage/AuthPage';
 import CoursePage from './pages/CoursePage/CoursePage';
 import CoursePageAuthenticated from './pages/CoursePageAuthenticated/CoursePageAuthenticated';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
+import WorkoutChoice from './pages/WorkoutChoice/WorkoutChoice';
 import TrainingPage from './pages/TrainingPage/TrainingPage';
 import TrainingPageWithModal from './pages/TrainingPageWithModal/TrainingPageWithModal';
 import TrainingPageSuccess from './pages/TrainingPageSuccess/TrainingPageSuccess';
@@ -23,18 +24,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Публичные маршруты */}
-        <Route
-          path="/"
-          element={<CoursesPage />}
-        />
-        <Route
-          path="/auth"
-          element={<AuthPage onLogin={login} onRegister={register} />}
-        />
-        <Route
-          path="/course/:id"
-          element={<CoursePage />}
-        />
+        <Route path="/" element={<CoursesPage />} />
+        <Route path="/auth" element={<AuthPage onLogin={login} onRegister={register} />} />
+        <Route path="/course/:id" element={<CoursePage />} />
 
         {/* Приватные маршруты */}
         <Route
@@ -46,6 +38,14 @@ function App() {
           }
         />
         <Route
+          path="/course/:courseId/choose-workout"
+          element={
+            <PrivateRoute>
+              <WorkoutChoice />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/profile"
           element={
             <PrivateRoute>
@@ -53,8 +53,6 @@ function App() {
             </PrivateRoute>
           }
         />
-
-        {/* Маршруты тренировок с параметрами courseId и workoutId */}
         <Route
           path="/training/:courseId/:workoutId"
           element={

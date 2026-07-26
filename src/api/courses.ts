@@ -14,3 +14,4 @@ export const fetchCourseById = (courseId: string): Promise<Course> => {
 export const fetchCourseWorkouts = (courseId: string): Promise<Workout[]> => {
   return apiClient.get(`/api/fitness/courses/${courseId}/workouts`);
 };
+

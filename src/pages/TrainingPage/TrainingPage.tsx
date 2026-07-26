@@ -98,22 +98,22 @@ const TrainingPage: React.FC = () => {
           <div className={styles.exercisesContent}>
             <h2 className={styles.exercisesTitle}>Упражнения тренировки</h2>
             <div className={styles.exercisesGrid}>
-              {workout.exercises.map((exercise, index) => {
-                const progressValue = progress?.progressData?.[index] || 0;
-                const maxQuantity = exercise.quantity || 10;
-                const percent = Math.min(Math.round((progressValue / maxQuantity) * 100), 100);
-                return (
-                  <div key={exercise._id} className={styles.exerciseItem}>
-                    <p className={styles.exerciseText}>
-                      {exercise.name} ({percent}%)
-                    </p>
-                    <div className={styles.progressBarBg}>
-                      <div className={styles.progressBarFill} style={{ width: `${percent}%` }} />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+  {workout.exercises.map((exercise, index) => {
+    const progressValue = progress?.progressData?.[index] || 0;
+    const maxQuantity = exercise.quantity || 10;
+    const percent = Math.min(Math.round((progressValue / maxQuantity) * 100), 100);
+    return (
+      <div key={exercise._id} className={styles.exerciseItem}>
+        <p className={styles.exerciseText}>
+          {exercise.name} ({percent}%)
+        </p>
+        <div className={styles.progressBarBg}>
+          <div className={styles.progressBarFill} style={{ width: `${percent}%` }} />
+        </div>
+      </div>
+    );
+  })}
+</div>
             <button className={styles.progressButton} onClick={handleOpenProgress}>
               Заполнить свой прогресс
             </button>
