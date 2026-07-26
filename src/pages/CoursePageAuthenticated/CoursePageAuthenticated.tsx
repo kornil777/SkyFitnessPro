@@ -1,14 +1,18 @@
 // src/pages/CoursePageAuthenticated/CoursePageAuthenticated.tsx
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { fetchCourseById } from '../../api/courses';
-import { addCourseToUser, removeCourseFromUser, checkUserHasCourse } from '../../api/purchases';
-import UserProfile from '../../components/UserProfile/UserProfile';
-import { getCourseImage } from '../../utils/imageMap';
-import type { Course } from '../../types/course.types';
-import styles from './CoursePageAuthenticated.module.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { fetchCourseById } from "../../api/courses";
+import {
+  addCourseToUser,
+  removeCourseFromUser,
+  checkUserHasCourse,
+} from "../../api/purchases";
+import UserProfile from "../../components/UserProfile/UserProfile";
+import { getCourseImage } from "../../utils/imageMap";
+import type { Course } from "../../types/course.types";
+import styles from "./CoursePageAuthenticated.module.css";
 
 const CoursePageAuthenticated: React.FC = () => {
   const navigate = useNavigate();
@@ -23,7 +27,7 @@ const CoursePageAuthenticated: React.FC = () => {
   useEffect(() => {
     const loadCourse = async () => {
       if (!id) {
-        setError('ID курса не указан');
+        setError("ID курса не указан");
         setLoading(false);
         return;
       }
@@ -35,7 +39,7 @@ const CoursePageAuthenticated: React.FC = () => {
           setIsCourseAdded(has);
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Ошибка загрузки курса');
+        setError(err instanceof Error ? err.message : "Ошибка загрузки курса");
       } finally {
         setLoading(false);
       }
@@ -43,10 +47,10 @@ const CoursePageAuthenticated: React.FC = () => {
     loadCourse();
   }, [id, user]);
 
-  const handleProfileClick = () => navigate('/profile');
+  const handleProfileClick = () => navigate("/profile");
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
   const handleAddCourse = async () => {
     if (!id) return;
@@ -55,7 +59,7 @@ const CoursePageAuthenticated: React.FC = () => {
       await addCourseToUser(id);
       setIsCourseAdded(true);
     } catch (err) {
-      console.error('Ошибка добавления курса:', err);
+      console.error("Ошибка добавления курса:", err);
     } finally {
       setIsAdding(false);
     }
@@ -66,23 +70,30 @@ const CoursePageAuthenticated: React.FC = () => {
       await removeCourseFromUser(id);
       setIsCourseAdded(false);
     } catch (err) {
-      console.error('Ошибка удаления курса:', err);
+      console.error("Ошибка удаления курса:", err);
     }
   };
 
   if (loading) return <div className={styles.loading}>Загрузка курса...</div>;
-  if (error || !course) return <div className={styles.error}>Ошибка: {error || 'Курс не найден'}</div>;
+  if (error || !course)
+    return (
+      <div className={styles.error}>Ошибка: {error || "Курс не найден"}</div>
+    );
 
   const imageUrl = getCourseImage(course.nameRU);
 
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <img src="/images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
+        <img
+          src="/images/logo.svg"
+          alt="SkyFitnessPro"
+          className={styles.logo}
+        />
         <div className={styles.userProfileWrapper}>
           <UserProfile
-            userName={user?.name || ''}
-            userEmail={user?.email || ''}
+            userName={user?.name || ""}
+            userEmail={user?.email || ""}
             onProfileClick={handleProfileClick}
             onLogout={handleLogout}
             onAddCourse={() => {}}
@@ -93,56 +104,97 @@ const CoursePageAuthenticated: React.FC = () => {
       <main className={styles.content}>
         <p className={styles.subtitle}>Онлайн-тренировки для занятий дома</p>
 
-        <img src={imageUrl} alt={course.nameRU} className={styles.courseImage} />
+        <img
+          src={imageUrl}
+          alt={course.nameRU}
+          className={styles.courseImage}
+        />
 
         <h1 className={styles.courseTitle}>{course.nameRU}</h1>
 
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Подойдет для вас, если:</h2>
-          <ul className={styles.list}>
+          <div className={styles.fittingCards}>
             {course.fitting?.map((item, index) => (
-              <li key={index} className={styles.listItem}>{item}</li>
+              <div key={index} className={styles.fittingCard}>
+                <span className={styles.cardNumber}>{index + 1}</span>
+                <p className={styles.cardText}>{item}</p>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
 
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Направления</h2>
-          <div className={styles.tags}>
+          <div className={styles.directionsBlock}>
             {course.directions?.map((dir, index) => (
-              <span key={index} className={styles.tag}>{dir}</span>
+              <div key={index} className={styles.directionItem}>
+                <span className={styles.directionIcon}>
+                  <img src="/images/star.svg" />
+                </span>{" "}
+                {/* Позже заменим на картинку */}
+                <span className={styles.directionText}>{dir}</span>
+              </div>
             ))}
           </div>
         </div>
+        
 
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>Описание</h2>
-          <p className={styles.description}>{course.description}</p>
-        </div>
-
-        <div className={styles.offerBlock}>
-          <div className={styles.offerContent}>
-            <h3 className={styles.offerTitle}>Начните путь <br />к новому телу</h3>
-            <p className={styles.offerDescription}>
-              проработка всех групп мышц<br />
-              тренировка суставов<br />
-              улучшение циркуляции крови<br />
-              упражнения заряжают бодростью<br />
-              помогают противостоять стрессам
-            </p>
-            {isCourseAdded ? (
-              <button className={styles.offerButton} onClick={handleRemoveCourse} disabled={isAdding}>
-                Удалить курс
-              </button>
-            ) : (
-              <button className={styles.offerButton} onClick={handleAddCourse} disabled={isAdding}>
-                {isAdding ? 'Добавление...' : 'Добавить курс'}
-              </button>
-            )}
-          </div>
-          <div className={styles.decorImages}>
-            <img src="/images/block4.svg" alt="Decorative 1" className={styles.block4} />
-            <img src="/images/block5.svg" alt="Decorative 2" className={styles.block5} />
+        <div className={styles.offerWrapper}>
+          <div className={styles.offerBlock}>
+            <div className={styles.offerContent}>
+              <h3 className={styles.offerTitle}>
+                Начните путь <br />к новому телу
+              </h3>
+              <p className={styles.offerDescription}>
+                <li>
+                  проработка всех групп мышц
+                  <br />
+                </li>
+                <li>
+                  тренировка суставов
+                  <br />
+                </li>
+                <li>
+                  улучшение циркуляции крови
+                  <br />
+                </li>
+                <li>
+                  упражнения заряжают бодростью
+                  <br />
+                </li>
+                <li>помогают противостоять стрессам</li>
+              </p>
+              {isCourseAdded ? (
+                <button
+                  className={styles.offerButton}
+                  onClick={handleRemoveCourse}
+                  disabled={isAdding}
+                >
+                  Удалить курс
+                </button>
+              ) : (
+                <button
+                  className={styles.offerButton}
+                  onClick={handleAddCourse}
+                  disabled={isAdding}
+                >
+                  {isAdding ? "Добавление..." : "Добавить курс"}
+                </button>
+              )}
+            </div>
+            <div className={styles.decorImages}>
+              <img
+                src="/images/block4.svg"
+                alt="Decorative 1"
+                className={styles.block4}
+              />
+              <img
+                src="/images/block5.svg"
+                alt="Decorative 2"
+                className={styles.block5}
+              />
+            </div>
           </div>
         </div>
       </main>

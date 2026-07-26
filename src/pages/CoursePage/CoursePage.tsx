@@ -56,18 +56,26 @@ const CoursePage: React.FC = () => {
 
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Подойдет для вас, если:</h2>
-          <ul className={styles.list}>
+          <div className={styles.fittingCards}>
             {course.fitting?.map((item, index) => (
-              <li key={index} className={styles.listItem}>{item}</li>
+              <div key={index} className={styles.fittingCard}>
+                <span className={styles.cardNumber}>{index + 1}</span>
+                <p className={styles.cardText}>{item}</p>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
 
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Направления</h2>
-          <div className={styles.tags}>
+          <div className={styles.directionsBlock}>
             {course.directions?.map((dir, index) => (
-              <span key={index} className={styles.tag}>{dir}</span>
+              <div key={index} className={styles.directionItem}>
+                <span className={styles.directionIcon}>
+                  <img src="/images/star.svg" alt="*" />
+                </span>
+                <span className={styles.directionText}>{dir}</span>
+              </div>
             ))}
           </div>
         </div>
@@ -77,23 +85,25 @@ const CoursePage: React.FC = () => {
           <p className={styles.description}>{course.description}</p>
         </div>
 
-        <div className={styles.offerBlock}>
-          <div className={styles.offerContent}>
-            <h3 className={styles.offerTitle}>Начните путь <br />к новому телу</h3>
-            <p className={styles.offerDescription}>
-              проработка всех групп мышц<br />
-              тренировка суставов<br />
-              улучшение циркуляции крови<br />
-              упражнения заряжают бодростью<br />
-              помогают противостоять стрессам
-            </p>
-            <button className={styles.offerButton} onClick={handleLoginClick}>
-              Войдите, чтобы добавить курс
-            </button>
-          </div>
-          <div className={styles.decorImages}>
-            <img src="/images/block4.svg" alt="Decorative 1" className={styles.block4} />
-            <img src="/images/block5.svg" alt="Decorative 2" className={styles.block5} />
+        <div className={styles.offerWrapper}>
+          <div className={styles.offerBlock}>
+            <div className={styles.offerContent}>
+              <h3 className={styles.offerTitle}>Начните путь <br />к новому телу</h3>
+              <ul className={styles.offerDescription}>
+                <li>проработка всех групп мышц</li>
+                <li>тренировка суставов</li>
+                <li>улучшение циркуляции крови</li>
+                <li>упражнения заряжают бодростью</li>
+                <li>помогают противостоять стрессам</li>
+              </ul>
+              <button className={styles.offerButton} onClick={handleLoginClick}>
+                Войдите, чтобы добавить курс
+              </button>
+            </div>
+            <div className={styles.decorImages}>
+              <img src="/images/block4.svg" alt="Decorative 1" className={styles.block4} />
+              <img src="/images/block5.svg" alt="Decorative 2" className={styles.block5} />
+            </div>
           </div>
         </div>
       </main>
