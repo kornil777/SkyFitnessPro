@@ -4,7 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { getWorkoutById, getWorkoutProgress, saveWorkoutProgress } from '../../api/workouts';
-import UserProfile from '../../components/UserProfile/UserProfile';
+import Header from '../../components/Header/Header';
+import SuccessModal from '../../components/SuccessModal/SuccessModal';
+import { splitWorkoutName } from '../../utils/splitWorkoutName';
 import type { Workout } from '../../types/course.types';
 import styles from './TrainingPageWithModal.module.css';
 
@@ -16,6 +18,8 @@ const TrainingPageWithModal: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [progressValues, setProgressValues] = useState<number[]>([]);
   const [saving, setSaving] = useState(false);
+  const [showProgressModal, setShowProgressModal] = useState(true);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   useEffect(() => {
     const loadWorkout = async () => {
@@ -23,8 +27,6 @@ const TrainingPageWithModal: React.FC = () => {
       try {
         const data = await getWorkoutById(workoutId);
         setWorkout(data);
-
-        // Загружаем существующий прогресс
         try {
           const progressData = await getWorkoutProgress(courseId, workoutId);
           if (progressData && progressData.progressData) {
@@ -63,7 +65,8 @@ const TrainingPageWithModal: React.FC = () => {
     setSaving(true);
     try {
       await saveWorkoutProgress(courseId, workoutId, progressValues);
-      navigate(`/training/${courseId}/${workoutId}/success`);
+      setShowProgressModal(false);
+      setShowSuccessModal(true);
     } catch (error) {
       console.error('Failed to save progress:', error);
     } finally {
@@ -71,30 +74,34 @@ const TrainingPageWithModal: React.FC = () => {
     }
   };
 
-  const handleCloseModal = () => navigate(`/training/${courseId}/${workoutId}`);
+  const handleCloseProgressModal = () => {
+    navigate(`/training/${courseId}/${workoutId}`);
+  };
+
   const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) handleCloseModal();
+    if (e.target === e.currentTarget) handleCloseProgressModal();
+  };
+
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
+    navigate(`/training/${courseId}/${workoutId}`);
   };
 
   if (loading) return <div>Загрузка...</div>;
   if (!workout) return <div>Тренировка не найдена</div>;
 
+  const { title, subtitle } = splitWorkoutName(workout.name);
+
   return (
     <div className={styles.page}>
-      <div className={styles.pageOverlay} onClick={handleOverlayClick} />
-      <img src="/images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
-      <div className={styles.userProfileWrapper}>
-        <UserProfile
-          userName={user?.name || ''}
-          userEmail={user?.email || ''}
-          onProfileClick={handleProfileClick}
-          onLogout={handleLogout}
-          onAddCourse={handleAddCourse}
-        />
-      </div>
+      <Header />
+      
+      <main className={styles.content}>
+        <div className={styles.titleBlock}>
+          <h1 className={styles.title}>{title}</h1>
+          {subtitle && <span className={styles.titleSub}>{subtitle}</span>}
+        </div>
 
-      <div className={styles.contentBlock}>
-        <h1 className={styles.title}>{workout.name}</h1>
         <div className={styles.videoContainer}>
           <iframe
             width="1160"
@@ -106,6 +113,7 @@ const TrainingPageWithModal: React.FC = () => {
             className={styles.videoIframe}
           />
         </div>
+
         <div className={styles.exercisesBlock}>
           <div className={styles.exercisesContent}>
             <h2 className={styles.exercisesTitle}>Упражнения тренировки</h2>
@@ -116,33 +124,44 @@ const TrainingPageWithModal: React.FC = () => {
                 </div>
               ))}
             </div>
-            <button className={styles.progressButton} onClick={() => {}}>
+            <button className={styles.progressButton} onClick={() => setShowProgressModal(true)}>
               Заполнить свой прогресс
             </button>
           </div>
         </div>
-      </div>
+      </main>
 
-      <div className={styles.modalContainer}>
-        <h2 className={styles.modalTitle}>Мой прогресс</h2>
-        <div className={styles.scrollableContent}>
-          {workout.exercises.map((exercise, index) => (
-            <div key={exercise._id} className={styles.progressItem}>
-              <p className={styles.questionText}>{exercise.name}</p>
-              <input
-                type="number"
-                className={styles.inputField}
-                value={progressValues[index] || 0}
-                onChange={(e) => handleInputChange(index, e.target.value)}
-                min="0"
-              />
+      {/* Модалка ввода прогресса */}
+      {showProgressModal && (
+        <div className={styles.overlay} onClick={handleOverlayClick}>
+          <div className={styles.modalContainer} onClick={(e) => e.stopPropagation()}>
+            <button className={styles.closeButton} onClick={handleCloseProgressModal}>
+              ✕
+            </button>
+            <h2 className={styles.modalTitle}>Мой прогресс</h2>
+            <div className={styles.scrollableContent}>
+              {workout.exercises.map((exercise, index) => (
+                <div key={exercise._id} className={styles.progressItem}>
+                  <p className={styles.questionText}>{exercise.name}</p>
+                  <input
+                    type="number"
+                    className={styles.inputField}
+                    value={progressValues[index] || 0}
+                    onChange={(e) => handleInputChange(index, e.target.value)}
+                    min="0"
+                  />
+                </div>
+              ))}
             </div>
-          ))}
+            <button className={styles.saveButton} onClick={handleSave} disabled={saving}>
+              {saving ? 'Сохранение...' : 'Сохранить'}
+            </button>
+          </div>
         </div>
-        <button className={styles.saveButton} onClick={handleSave} disabled={saving}>
-          {saving ? 'Сохранение...' : 'Сохранить'}
-        </button>
-      </div>
+      )}
+
+      {/* Модалка успеха */}
+      <SuccessModal isOpen={showSuccessModal} onClose={handleSuccessModalClose} />
     </div>
   );
 };

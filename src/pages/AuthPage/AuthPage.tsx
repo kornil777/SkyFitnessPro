@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Login from "../../components/Login/Login";
 import Register from "../../components/Register/Register";
 import styles from "./AuthPage.module.css";
+import Header from "../../components/Header/Header";
 
 interface AuthPageProps {
   onLogin: (email: string, password: string) => Promise<boolean>;
@@ -57,9 +58,10 @@ const AuthPage: React.FC<AuthPageProps> = ({ onLogin, onRegister }) => {
 
   return (
     <div className={styles.page}>
-      {/* Логотип */}
-      <img src="/images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
-      {/* Подпись */}
+       <Header showAuthButton={false} />
+  <p className={styles.subtitle}>...</p>
+  <h1 className={styles.title}>...</h1>
+     
       <p className={styles.subtitle}>Онлайн-тренировки для занятий дома</p>
       {/* Заголовок */}
       <h1 className={styles.title}>

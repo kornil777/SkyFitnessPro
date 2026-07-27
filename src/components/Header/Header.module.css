@@ -1,0 +1,44 @@
+.header {
+  width: 100%;
+  max-width: 1160px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 50px 0 20px;
+  position: relative;
+  margin: 0 auto;
+}
+
+.logoLink {
+  display: inline-block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo {
+  width: 220px;
+  height: 35px;
+  object-fit: contain;
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+}
+
+.loginButton {
+  width: 103px;
+  height: 52px;
+  background: #BCEC30;
+  border-radius: 46px;
+  border: none;
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: #000;
+  cursor: pointer;
+}
+
+.loginButton:hover {
+  opacity: 0.8;
+}

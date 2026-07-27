@@ -14,7 +14,7 @@ import ProfilePage from './pages/ProfilePage/ProfilePage';
 import WorkoutChoice from './pages/WorkoutChoice/WorkoutChoice';
 import TrainingPage from './pages/TrainingPage/TrainingPage';
 import TrainingPageWithModal from './pages/TrainingPageWithModal/TrainingPageWithModal';
-import TrainingPageSuccess from './pages/TrainingPageSuccess/TrainingPageSuccess';
+
 import TrainingPageUpdated from './pages/TrainingPageUpdated/TrainingPageUpdated';
 
 function App() {
@@ -69,14 +69,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route
-          path="/training/:courseId/:workoutId/success"
-          element={
-            <PrivateRoute>
-              <TrainingPageSuccess />
-            </PrivateRoute>
-          }
-        />
+        
         <Route
           path="/training/:courseId/:workoutId/updated"
           element={

@@ -6,6 +6,7 @@ import { fetchCourseById } from '../../api/courses';
 import { getCourseImage } from '../../utils/imageMap';
 import type { Course } from '../../types/course.types';
 import styles from './CoursePage.module.css';
+import Header from '../../components/Header/Header';
 
 const CoursePage: React.FC = () => {
   const navigate = useNavigate();
@@ -42,10 +43,8 @@ const CoursePage: React.FC = () => {
 
   return (
     <div className={styles.page}>
-      <header className={styles.header}>
-        <img src="/images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
-        <button className={styles.loginButton} onClick={handleLoginClick}>Войти</button>
-      </header>
+      <Header /> 
+      
 
       <main className={styles.content}>
         <p className={styles.subtitle}>Онлайн-тренировки для занятий дома</p>

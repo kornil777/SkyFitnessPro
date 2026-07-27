@@ -5,6 +5,8 @@ import { getWorkoutById, getWorkoutProgress } from '../../api/workouts';
 import UserProfile from '../../components/UserProfile/UserProfile';
 import type { Workout } from '../../types/course.types';
 import styles from './TrainingPageSuccess.module.css';
+import Header from '../../components/Header/Header';
+import { splitWorkoutName } from '../../utils/splitWorkoutName';
 
 const TrainingPageSuccess: React.FC = () => {
   const navigate = useNavigate();
@@ -50,23 +52,20 @@ const TrainingPageSuccess: React.FC = () => {
     const value = progress[exerciseIndex] || 0;
     return Math.min(Math.round((value / maxQuantity) * 100), 100);
   };
+  const { title, subtitle } = splitWorkoutName(workout.name);
 
   return (
     <div className={styles.page}>
+      <Header />
       <div className={styles.pageOverlay} onClick={handleUpdateProgress} />
-      <img src="/images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
-      <div className={styles.userProfileWrapper}>
-        <UserProfile
-          userName={user?.name || ''}
-          userEmail={user?.email || ''}
-          onProfileClick={handleProfileClick}
-          onLogout={handleLogout}
-          onAddCourse={handleAddCourse}
-        />
-      </div>
+      
 
       <div className={styles.contentBlock}>
-        <h1 className={styles.title}>{workout.name}</h1>
+        <div className={styles.titleBlock}>
+  <h1 className={styles.title}>{title}</h1>
+  {subtitle && <span className={styles.titleSub}>{subtitle}</span>}
+</div>
+        
         <div className={styles.videoContainer}>
           <iframe
             width="1160"

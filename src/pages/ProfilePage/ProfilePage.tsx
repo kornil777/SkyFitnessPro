@@ -11,6 +11,9 @@ import TrainingModal from '../../components/TrainingModal/TrainingModal';
 import { getCourseImage } from '../../utils/imageMap';
 import type { Course } from '../../types/course.types';
 import styles from './ProfilePage.module.css';
+import Header from '../../components/Header/Header';
+
+
 
 interface CourseWithProgress extends Course {
   progress: number;
@@ -101,16 +104,8 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className={styles.page}>
-      <img src="/images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
-      <div className={styles.userProfileWrapper}>
-        <UserProfile
-          userName={user?.name || ''}
-          userEmail={user?.email || ''}
-          onProfileClick={handleProfileClick}
-          onLogout={handleLogout}
-          onAddCourse={handleAddCourse}
-        />
-      </div>
+       <Header />
+      
 
       <div className={styles.contentBlock}>
         <h1 className={styles.profileTitle}>Профиль</h1>
