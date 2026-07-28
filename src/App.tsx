@@ -1,7 +1,7 @@
 // src/App.tsx
 
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import AuthModal from './components/AuthModal/AuthModal';
@@ -11,31 +11,25 @@ import CoursePageAuthenticated from './pages/CoursePageAuthenticated/CoursePageA
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import TrainingPage from './pages/TrainingPage/TrainingPage';
 import TrainingPageWithModal from './pages/TrainingPageWithModal/TrainingPageWithModal';
-import TrainingPageSuccess from './pages/TrainingPageSuccess/TrainingPageSuccess';
-import TrainingPageUpdated from './pages/TrainingPageUpdated/TrainingPageUpdated';
 
-function AppContent() {
+function App() {
   const { user, login, register, logout } = useAuth();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const location = useLocation();
 
   const openAuthModal = () => setIsAuthModalOpen(true);
   const closeAuthModal = () => setIsAuthModalOpen(false);
 
-  // Открываем модалку, если в state есть openAuthModal
-  useEffect(() => {
-    if (location.state && location.state.openAuthModal) {
-      openAuthModal();
-      // Очищаем state, чтобы при обновлении страницы не открывалась модалка
-      window.history.replaceState({}, document.title);
-    }
-  }, [location]);
-
   return (
-    <>
+    <BrowserRouter>
       <Routes>
-        <Route path="/" element={<CoursesPage openAuthModal={openAuthModal} />} />
-        <Route path="/course/:id" element={<CoursePage openAuthModal={openAuthModal} />} />
+        <Route
+          path="/"
+          element={<CoursesPage openAuthModal={openAuthModal} />}
+        />
+        <Route
+          path="/course/:id"
+          element={<CoursePage openAuthModal={openAuthModal} />}
+        />
         <Route
           path="/course/:id/authenticated"
           element={
@@ -68,22 +62,6 @@ function AppContent() {
             </PrivateRoute>
           }
         />
-        <Route
-          path="/training/:courseId/:workoutId/success"
-          element={
-            <PrivateRoute>
-              <TrainingPageSuccess openAuthModal={openAuthModal} />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/training/:courseId/:workoutId/updated"
-          element={
-            <PrivateRoute>
-              <TrainingPageUpdated openAuthModal={openAuthModal} />
-            </PrivateRoute>
-          }
-        />
       </Routes>
 
       <AuthModal
@@ -92,14 +70,6 @@ function AppContent() {
         onLogin={login}
         onRegister={register}
       />
-    </>
-  );
-}
-
-function App() {
-  return (
-    <BrowserRouter>
-      <AppContent />
     </BrowserRouter>
   );
 }

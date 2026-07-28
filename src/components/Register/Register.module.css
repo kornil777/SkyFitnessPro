@@ -50,20 +50,26 @@
 }
 
 .registerButton {
-    width: 280px;
-    height: 52px;
-    gap: 10px;
-    border-radius: 46px;
-    padding: 16px 26px;
-    background: #BCEC30;
-    border: none;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 110%;
-    color: #000000;
-    cursor: pointer;
+  width: 280px;
+  height: 52px;
+  background: #BCEC30;
+  border-radius: 46px;
+  border: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  color: #000000;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+}
 
+.registerButton:hover {
+  opacity: 0.9;
+}
+
+.registerButton:active {
+  background: #E9ECED;
+  color: #000000;
 }
 
 .loginButton {

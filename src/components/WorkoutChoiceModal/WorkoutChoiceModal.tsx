@@ -20,9 +20,15 @@ const WorkoutChoiceModal: React.FC<WorkoutChoiceModalProps> = ({ courseId, onClo
     const loadWorkouts = async () => {
       try {
         const data = await getCourseWorkouts(courseId);
-        setWorkouts(data);
-        if (data.length > 0) {
-          setSelectedWorkoutId(data[0]._id);
+        // Сортируем тренировки по извлечённому номеру
+        const sorted = data.sort((a, b) => {
+          const numA = extractNumber(a.name);
+          const numB = extractNumber(b.name);
+          return numA - numB;
+        });
+        setWorkouts(sorted);
+        if (sorted.length > 0) {
+          setSelectedWorkoutId(sorted[0]._id);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Ошибка загрузки тренировок');
@@ -32,6 +38,17 @@ const WorkoutChoiceModal: React.FC<WorkoutChoiceModalProps> = ({ courseId, onClo
     };
     loadWorkouts();
   }, [courseId]);
+
+  // Функция извлечения номера из названия тренировки
+  const extractNumber = (name: string): number => {
+    // Ищем число в строке (поддерживаем форматы: "1 день", "Урок 2", "2/3" и т.д.)
+    const match = name.match(/\d+/);
+    if (match) {
+      return parseInt(match[0], 10);
+    }
+    return Infinity; // если нет номера, ставим в конец
+  };
+  
 
   const handleSelect = (workoutId: string) => {
     setSelectedWorkoutId(workoutId);

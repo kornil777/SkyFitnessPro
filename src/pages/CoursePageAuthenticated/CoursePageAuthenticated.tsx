@@ -10,6 +10,7 @@ import { getCourseImage } from '../../utils/imageMap';
 import type { Course } from '../../types/course.types';
 import styles from './CoursePageAuthenticated.module.css';
 import Loader from '../../components/Loader/Loader';
+import CourseBanner from '../../components/CourseBanner/CourseBanner';
 
 interface CoursePageAuthenticatedProps {
   openAuthModal: () => void;}
@@ -90,8 +91,7 @@ const CoursePageAuthenticated: React.FC<CoursePageAuthenticatedProps> = ({ openA
       <main className={styles.content}>
         <p className={styles.subtitle}>Онлайн-тренировки для занятий дома</p>
 
-        <img src={imageUrl} alt={course.nameRU} className={styles.courseImage} />
-
+        <CourseBanner nameRU={course.nameRU} />
         <h1 className={styles.courseTitle}>{course.nameRU}</h1>
 
         <div className={styles.section}>

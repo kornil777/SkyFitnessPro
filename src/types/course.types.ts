@@ -26,8 +26,9 @@ export interface Course {
     from: number;
     to: number;
   };
-  workouts: string[]; // массив ID тренировок
-  image?: string; // для маппинга
+  workouts: string[]; 
+  image?: string;
+  order?: number; 
 }
 
 // Ответ на GET /api/fitness/users/me/progress?courseId=...

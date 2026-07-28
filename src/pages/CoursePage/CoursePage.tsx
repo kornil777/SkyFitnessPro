@@ -8,6 +8,7 @@ import Header from '../../components/Header/Header';
 import type { Course } from '../../types/course.types';
 import styles from './CoursePage.module.css';
 import Loader from '../../components/Loader/Loader';
+import CourseBanner from '../../components/CourseBanner/CourseBanner';
 
 interface CoursePageProps {
   openAuthModal: () => void;
@@ -53,7 +54,7 @@ const CoursePage: React.FC<CoursePageProps> = ({ openAuthModal }) => {
       <Header openAuthModal={openAuthModal} />
       <main className={styles.content}>
         <p className={styles.subtitle}>Онлайн-тренировки для занятий дома</p>
-        <img src={imageUrl} alt={course.nameRU} className={styles.courseImage} />
+        <CourseBanner nameRU={course.nameRU} />
         <h1 className={styles.courseTitle}>{course.nameRU}</h1>
 
         {/* Блок "Подойдет для вас, если:" */}
