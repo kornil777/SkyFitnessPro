@@ -1,9 +1,8 @@
-import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 interface PrivateRouteProps {
-  children: React.ReactNode; // или React.ReactElement
+  children: React.ReactNode;
 }
 
 const PrivateRoute = ({ children }: PrivateRouteProps) => {
@@ -13,7 +12,12 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
     return <div>Загрузка...</div>;
   }
 
-  return isAuthenticated ? <>{children}</> : <Navigate to="/auth" replace />;
+  if (!isAuthenticated) {
+    
+    return <Navigate to="/" state={{ openAuthModal: true }} replace />;
+  }
+
+  return <>{children}</>;
 };
 
 export default PrivateRoute;

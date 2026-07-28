@@ -8,7 +8,11 @@ import styles from './TrainingPageSuccess.module.css';
 import Header from '../../components/Header/Header';
 import { splitWorkoutName } from '../../utils/splitWorkoutName';
 
-const TrainingPageSuccess: React.FC = () => {
+interface TrainingPageSuccessProps {
+  openAuthModal: () => void;
+}
+
+const TrainingPageSuccess: React.FC<TrainingPageSuccessProps> = ({ openAuthModal }) => {
   const navigate = useNavigate();
   const { courseId, workoutId } = useParams<{ courseId: string; workoutId: string }>();
   const { user, logout } = useAuth();
@@ -56,7 +60,7 @@ const TrainingPageSuccess: React.FC = () => {
 
   return (
     <div className={styles.page}>
-      <Header />
+      <Header openAuthModal={openAuthModal} />
       <div className={styles.pageOverlay} onClick={handleUpdateProgress} />
       
 

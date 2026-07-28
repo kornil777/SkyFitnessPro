@@ -9,8 +9,13 @@ import SuccessModal from '../../components/SuccessModal/SuccessModal';
 import { splitWorkoutName } from '../../utils/splitWorkoutName';
 import type { Workout } from '../../types/course.types';
 import styles from './TrainingPageWithModal.module.css';
+import Loader from '../../components/Loader/Loader';
 
-const TrainingPageWithModal: React.FC = () => {
+interface TrainingPageWithModalProps {
+  openAuthModal: () => void;
+}
+
+const TrainingPageWithModal: React.FC<TrainingPageWithModalProps> = ({ openAuthModal }) => {
   const navigate = useNavigate();
   const { courseId, workoutId } = useParams<{ courseId: string; workoutId: string }>();
   const { user, logout } = useAuth();
@@ -20,6 +25,7 @@ const TrainingPageWithModal: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(true);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  
 
   useEffect(() => {
     const loadWorkout = async () => {
@@ -87,14 +93,14 @@ const TrainingPageWithModal: React.FC = () => {
     navigate(`/training/${courseId}/${workoutId}`);
   };
 
-  if (loading) return <div>Загрузка...</div>;
+  if (loading) return <Loader fullPage />;
   if (!workout) return <div>Тренировка не найдена</div>;
 
   const { title, subtitle } = splitWorkoutName(workout.name);
 
   return (
     <div className={styles.page}>
-      <Header />
+       <Header openAuthModal={openAuthModal} />
       
       <main className={styles.content}>
         <div className={styles.titleBlock}>

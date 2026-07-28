@@ -4,11 +4,16 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fetchCourseById } from '../../api/courses';
 import { getCourseImage } from '../../utils/imageMap';
+import Header from '../../components/Header/Header';
 import type { Course } from '../../types/course.types';
 import styles from './CoursePage.module.css';
-import Header from '../../components/Header/Header';
+import Loader from '../../components/Loader/Loader';
 
-const CoursePage: React.FC = () => {
+interface CoursePageProps {
+  openAuthModal: () => void;
+}
+
+const CoursePage: React.FC<CoursePageProps> = ({ openAuthModal }) => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [course, setCourse] = useState<Course | null>(null);
@@ -34,25 +39,24 @@ const CoursePage: React.FC = () => {
     loadCourse();
   }, [id]);
 
-  const handleLoginClick = () => navigate('/auth');
+  const handleLoginClick = () => {
+    openAuthModal(); 
+  };
 
-  if (loading) return <div className={styles.loading}>Загрузка курса...</div>;
+  if (loading) return <Loader fullPage />;
   if (error || !course) return <div className={styles.error}>Ошибка: {error || 'Курс не найден'}</div>;
 
   const imageUrl = getCourseImage(course.nameRU);
 
   return (
     <div className={styles.page}>
-      <Header /> 
-      
-
+      <Header openAuthModal={openAuthModal} />
       <main className={styles.content}>
         <p className={styles.subtitle}>Онлайн-тренировки для занятий дома</p>
-
         <img src={imageUrl} alt={course.nameRU} className={styles.courseImage} />
-
         <h1 className={styles.courseTitle}>{course.nameRU}</h1>
 
+        {/* Блок "Подойдет для вас, если:" */}
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Подойдет для вас, если:</h2>
           <div className={styles.fittingCards}>
@@ -65,25 +69,22 @@ const CoursePage: React.FC = () => {
           </div>
         </div>
 
+        {/* Блок "Направления" */}
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Направления</h2>
           <div className={styles.directionsBlock}>
             {course.directions?.map((dir, index) => (
               <div key={index} className={styles.directionItem}>
-                <span className={styles.directionIcon}>
-                  <img src="/images/star.svg" alt="*" />
-                </span>
+                <span className={styles.directionIcon}><img src="/images/star.svg" alt="*" /></span>
                 <span className={styles.directionText}>{dir}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>Описание</h2>
-          <p className={styles.description}>{course.description}</p>
-        </div>
+        
 
+        {/* Блок с предложением */}
         <div className={styles.offerWrapper}>
           <div className={styles.offerBlock}>
             <div className={styles.offerContent}>

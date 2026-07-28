@@ -7,8 +7,13 @@ import type { Workout } from '../../types/course.types';
 import styles from './TrainingPageUpdated.module.css';
 import Header from '../../components/Header/Header';
 import { splitWorkoutName } from '../../utils/splitWorkoutName';
+import Loader from '../../components/Loader/Loader';
 
-const TrainingPageUpdated: React.FC = () => {
+interface TrainingPageUpdatedProps {
+  openAuthModal: () => void;
+}
+
+const TrainingPageUpdated: React.FC<TrainingPageUpdatedProps> = ({ openAuthModal }) => {
   const navigate = useNavigate();
   const { courseId, workoutId } = useParams<{ courseId: string; workoutId: string }>();
   const { user, logout } = useAuth();
@@ -43,7 +48,7 @@ const TrainingPageUpdated: React.FC = () => {
     navigate(`/training/${courseId}/${workoutId}/progress`);
   };
 
-  if (loading) return <div>Загрузка...</div>;
+  if (loading) return <Loader fullPage />;
   if (!workout) return <div>Тренировка не найдена</div>;
 
   const getProgressPercent = (exerciseIndex: number) => {
@@ -56,7 +61,7 @@ const { title, subtitle } = splitWorkoutName(workout.name);
 
   return (
     <div className={styles.page}>
-      <Header />
+       <Header openAuthModal={openAuthModal} />
       
 
       <div className={styles.contentBlock}>

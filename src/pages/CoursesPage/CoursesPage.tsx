@@ -1,18 +1,21 @@
 // src/pages/CoursesPage/CoursesPage.tsx
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext'; // добавьте этот импорт
 import Header from '../../components/Header/Header';
 import CourseCard from '../../components/CourseCard/CourseCard';
 import ScrollToTop from '../../components/ScrollToTop/ScrollToTop';
 import { fetchCourses } from '../../api/courses';
 import type { Course } from '../../types/course.types';
 import styles from './CoursesPage.module.css';
+import Loader from '../../components/Loader/Loader';
 
-const CoursesPage: React.FC = () => {
-  const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+interface CoursesPageProps {
+  openAuthModal: () => void;
+}
+
+const CoursesPage: React.FC<CoursesPageProps> = ({ openAuthModal }) => {
+  const { isAuthenticated } = useAuth(); 
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,13 +34,12 @@ const CoursesPage: React.FC = () => {
     loadCourses();
   }, []);
 
-  if (loading) return <div className={styles.loading}>Загрузка курсов...</div>;
+  if (loading) return <Loader fullPage />;
   if (error) return <div className={styles.error}>Ошибка: {error}</div>;
 
   return (
     <div className={styles.page}>
-      <Header />
-      
+      <Header openAuthModal={openAuthModal} />
       <main className={styles.content}>
         <p className={styles.subtitle}>Онлайн-тренировки для занятий дома</p>
         <h1 className={styles.title}>
@@ -49,17 +51,15 @@ const CoursesPage: React.FC = () => {
           alt="Измени своё тело за полгода"
           className={styles.greenBlock}
         />
-
         <div className={styles.coursesGrid}>
           {courses.map((course) => (
             <CourseCard
               key={course._id}
               course={course}
-              isAuthenticated={isAuthenticated}
+              isAuthenticated={isAuthenticated} // теперь передаём реальное состояние
             />
           ))}
         </div>
-
         <ScrollToTop />
       </main>
     </div>

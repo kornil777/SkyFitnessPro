@@ -1,12 +1,101 @@
 .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
 
+.modal {
+  position: relative;
+  width: 360px;
+  background: #FFFFFF;
+  border-radius: 30px;
+  padding: 40px;
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  box-sizing: border-box;
+}
+
+.closeButton {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 32px;
+  font-weight: 400;
+  color: #858282;
+  cursor: pointer;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+  line-height: 1;
+}
+
+.closeButton:hover {
+  opacity: 0.6;
+}
+
+.toggleButtons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.toggleButton {
+  width: 120px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  font-weight: 400;
+  color: #000;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s;
+}
+
+.toggleButton:hover {
+  opacity: 0.8;
+}
+
+.activeToggle {
+  border-bottom: 2px solid #BCEC30;
+  font-weight: 500;
+}
+
+.successMessage {
+  text-align: center;
+  color: #4CAF50;
+  font-size: 16px;
+}
+
+/* Переопределяем стили для Login и Register, чтобы они были без абсолютного позиционирования */
+:global(.loginContainer),
+:global(.registerContainer) {
+  position: static !important;
+  transform: none !important;
+  width: 100% !important;
+  height: auto !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+:global(.loginContainer .logo),
+:global(.registerContainer .logo) {
+  display: none !important;
 }

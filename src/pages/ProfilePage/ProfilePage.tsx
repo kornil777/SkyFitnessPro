@@ -7,13 +7,16 @@ import { fetchUserData } from '../../api/purchases';
 import { fetchCourses } from '../../api/courses';
 import UserProfile from '../../components/UserProfile/UserProfile';
 import DeleteIcon from '../../components/DeleteIcon/DeleteIcon';
-import TrainingModal from '../../components/TrainingModal/TrainingModal';
+import WorkoutChoiceModal from '../../components/WorkoutChoiceModal/WorkoutChoiceModal';
 import { getCourseImage } from '../../utils/imageMap';
 import type { Course } from '../../types/course.types';
 import styles from './ProfilePage.module.css';
 import Header from '../../components/Header/Header';
+import Loader from '../../components/Loader/Loader';
 
-
+interface ProfilePageProps {
+  openAuthModal: () => void;
+}
 
 interface CourseWithProgress extends Course {
   progress: number;
@@ -21,13 +24,13 @@ interface CourseWithProgress extends Course {
   isDeleted?: boolean;
 }
 
-const ProfilePage: React.FC = () => {
+const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [courses, setCourses] = useState<CourseWithProgress[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCourse, setSelectedCourse] = useState<CourseWithProgress | null>(null);
-  const [isTrainingModalOpen, setIsTrainingModalOpen] = useState(false);
+  const [showWorkoutChoice, setShowWorkoutChoice] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
 
   useEffect(() => {
     const loadUserCourses = async () => {
@@ -52,7 +55,7 @@ const ProfilePage: React.FC = () => {
 
         const coursesWithProgress: CourseWithProgress[] = userCourses.map((course, index) => ({
           ...course,
-          progress: Math.floor(Math.random() * 100), // Временно, потом заменим на реальный прогресс
+          progress: Math.floor(Math.random() * 100),
           buttonText: index === 0 ? 'Продолжить' : 'Начать тренировки',
           isDeleted: false,
         }));
@@ -81,31 +84,22 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleStartTraining = (course: CourseWithProgress) => {
-  navigate(`/course/${course._id}/choose-workout`);
-};
-
-  const handleCloseTrainingModal = () => {
-    setIsTrainingModalOpen(false);
-    setSelectedCourse(null);
+    setSelectedCourseId(course._id);
+    setShowWorkoutChoice(true);
   };
 
-  const handleStartSelectedTrainings = (selectedTrainingIds: number[]) => {
-    // Эта функция вызывается из модалки выбора тренировок (если она используется)
-    if (selectedCourse && selectedCourse.workouts && selectedCourse.workouts.length > 0) {
-      const firstWorkoutId = selectedCourse.workouts[0];
-      navigate(`/training/${selectedCourse._id}/${firstWorkoutId}`);
-    }
-    setIsTrainingModalOpen(false);
+  const handleCloseWorkoutChoice = () => {
+    setShowWorkoutChoice(false);
+    setSelectedCourseId(null);
   };
 
   const userLogin = user?.email ? user.email.split('@')[0] : '';
 
-  if (loading) return <div>Загрузка...</div>;
+  if (loading) return <Loader fullPage />;
 
   return (
     <div className={styles.page}>
-       <Header />
-      
+      <Header openAuthModal={openAuthModal} />
 
       <div className={styles.contentBlock}>
         <h1 className={styles.profileTitle}>Профиль</h1>
@@ -179,12 +173,11 @@ const ProfilePage: React.FC = () => {
         </div>
       </div>
 
-      {selectedCourse && (
-        <TrainingModal
-          isOpen={isTrainingModalOpen}
-          onClose={handleCloseTrainingModal}
-          courseTitle={selectedCourse.nameRU}
-          onStartTraining={handleStartSelectedTrainings}
+      {/* Модалка выбора тренировки */}
+      {showWorkoutChoice && selectedCourseId && (
+        <WorkoutChoiceModal
+          courseId={selectedCourseId}
+          onClose={handleCloseWorkoutChoice}
         />
       )}
     </div>

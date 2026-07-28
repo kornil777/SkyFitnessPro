@@ -1,17 +1,16 @@
-// src/pages/WorkoutChoice/WorkoutChoice.tsx
-
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { getCourseWorkouts } from '../../api/workouts';
 import type { Workout } from '../../types/course.types';
-import styles from './WorkoutChoice.module.css';
-import Loader from '../../components/Loader/Loader';
+import styles from './WorkoutChoiceModal.module.css';
 
-const WorkoutChoice: React.FC = () => {
-  const { courseId } = useParams<{ courseId: string }>();
+interface WorkoutChoiceModalProps {
+  courseId: string;
+  onClose: () => void;
+}
+
+const WorkoutChoiceModal: React.FC<WorkoutChoiceModalProps> = ({ courseId, onClose }) => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -19,11 +18,6 @@ const WorkoutChoice: React.FC = () => {
 
   useEffect(() => {
     const loadWorkouts = async () => {
-      if (!courseId) {
-        setError('ID курса не указан');
-        setLoading(false);
-        return;
-      }
       try {
         const data = await getCourseWorkouts(courseId);
         setWorkouts(data);
@@ -46,17 +40,22 @@ const WorkoutChoice: React.FC = () => {
   const handleStart = () => {
     if (selectedWorkoutId && courseId) {
       navigate(`/training/${courseId}/${selectedWorkoutId}`);
+      onClose();
     }
   };
 
-  // Функция разбивки названия тренировки на две строки (убираем имя)
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   const splitWorkoutName = (name: string) => {
     const parts = name.split(' / ');
     if (parts.length >= 2) {
       const title = parts[0].trim();
       let subtitle = '';
       if (parts.length > 2) {
-        // Убираем последний элемент (обычно имя преподавателя)
         subtitle = parts.slice(1, -1).join(' / ').trim();
       } else {
         subtitle = parts.slice(1).join(' / ').trim();
@@ -66,12 +65,13 @@ const WorkoutChoice: React.FC = () => {
     return { title: name.trim(), subtitle: '' };
   };
 
-  if (loading) return <Loader fullPage />;
+  if (loading) return <div className={styles.loading}>Загрузка...</div>;
   if (error) return <div className={styles.error}>Ошибка: {error}</div>;
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.container}>
+    <div className={styles.overlay} onClick={handleOverlayClick}>
+      <div className={styles.container} onClick={(e) => e.stopPropagation()}>
+        <button className={styles.closeButton} onClick={onClose}>✕</button>
         <h2 className={styles.title}>Выберите тренировку</h2>
         <ul className={styles.list}>
           {workouts.map((workout) => {
@@ -114,4 +114,4 @@ const WorkoutChoice: React.FC = () => {
   );
 };
 
-export default WorkoutChoice;
+export default WorkoutChoiceModal;

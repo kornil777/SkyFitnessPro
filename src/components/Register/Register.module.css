@@ -93,9 +93,9 @@
 
 .errorText {
   color: #FF0000;
-  font-size: 14px;
-  margin-top: -8px;
-  margin-bottom: 8px;
+  font-size: 12px;
+  margin-top: -14px;
+  margin-bottom: -9px;
   display: block;
 }
 

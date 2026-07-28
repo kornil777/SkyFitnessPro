@@ -12,8 +12,13 @@ import type {
 } from "../../types/course.types";
 import styles from "./TrainingPage.module.css";
 import { formatExerciseName } from "../../utils/formatExerciseName";
+import Loader from '../../components/Loader/Loader';
 
-const TrainingPage: React.FC = () => {
+interface TrainingPageProps {
+  openAuthModal: () => void;
+}
+
+const TrainingPage: React.FC<TrainingPageProps> = ({ openAuthModal }) => {
   const navigate = useNavigate();
   const { courseId, workoutId } = useParams<{
     courseId: string;
@@ -66,8 +71,7 @@ const TrainingPage: React.FC = () => {
     navigate(`/training/${courseId}/${workoutId}/progress`);
   };
 
-  if (loading)
-    return <div className={styles.loading}>Загрузка тренировки...</div>;
+  if (loading) return <Loader fullPage />;
   if (error || !workout)
     return (
       <div className={styles.error}>
@@ -79,7 +83,7 @@ const TrainingPage: React.FC = () => {
 
   return (
     <div className={styles.page}>
-      <Header />
+      <Header openAuthModal={openAuthModal} />
       <main className={styles.content}>
         <div className={styles.titleBlock}>
           <h1 className={styles.title}>{title}</h1>

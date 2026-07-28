@@ -1,47 +1,46 @@
 // src/App.tsx
 
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
-
-// Страницы
+import AuthModal from './components/AuthModal/AuthModal';
 import CoursesPage from './pages/CoursesPage/CoursesPage';
-import AuthPage from './pages/AuthPage/AuthPage';
 import CoursePage from './pages/CoursePage/CoursePage';
 import CoursePageAuthenticated from './pages/CoursePageAuthenticated/CoursePageAuthenticated';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
-import WorkoutChoice from './pages/WorkoutChoice/WorkoutChoice';
 import TrainingPage from './pages/TrainingPage/TrainingPage';
 import TrainingPageWithModal from './pages/TrainingPageWithModal/TrainingPageWithModal';
-
+import TrainingPageSuccess from './pages/TrainingPageSuccess/TrainingPageSuccess';
 import TrainingPageUpdated from './pages/TrainingPageUpdated/TrainingPageUpdated';
 
-function App() {
+function AppContent() {
   const { user, login, register, logout } = useAuth();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const location = useLocation();
+
+  const openAuthModal = () => setIsAuthModalOpen(true);
+  const closeAuthModal = () => setIsAuthModalOpen(false);
+
+  // Открываем модалку, если в state есть openAuthModal
+  useEffect(() => {
+    if (location.state && location.state.openAuthModal) {
+      openAuthModal();
+      // Очищаем state, чтобы при обновлении страницы не открывалась модалка
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   return (
-    <BrowserRouter>
+    <>
       <Routes>
-        {/* Публичные маршруты */}
-        <Route path="/" element={<CoursesPage />} />
-        <Route path="/auth" element={<AuthPage onLogin={login} onRegister={register} />} />
-        <Route path="/course/:id" element={<CoursePage />} />
-
-        {/* Приватные маршруты */}
+        <Route path="/" element={<CoursesPage openAuthModal={openAuthModal} />} />
+        <Route path="/course/:id" element={<CoursePage openAuthModal={openAuthModal} />} />
         <Route
           path="/course/:id/authenticated"
           element={
             <PrivateRoute>
-              <CoursePageAuthenticated />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/course/:courseId/choose-workout"
-          element={
-            <PrivateRoute>
-              <WorkoutChoice />
+              <CoursePageAuthenticated openAuthModal={openAuthModal} />
             </PrivateRoute>
           }
         />
@@ -49,7 +48,7 @@ function App() {
           path="/profile"
           element={
             <PrivateRoute>
-              <ProfilePage />
+              <ProfilePage openAuthModal={openAuthModal} />
             </PrivateRoute>
           }
         />
@@ -57,7 +56,7 @@ function App() {
           path="/training/:courseId/:workoutId"
           element={
             <PrivateRoute>
-              <TrainingPage />
+              <TrainingPage openAuthModal={openAuthModal} />
             </PrivateRoute>
           }
         />
@@ -65,20 +64,42 @@ function App() {
           path="/training/:courseId/:workoutId/progress"
           element={
             <PrivateRoute>
-              <TrainingPageWithModal />
+              <TrainingPageWithModal openAuthModal={openAuthModal} />
             </PrivateRoute>
           }
         />
-        
+        <Route
+          path="/training/:courseId/:workoutId/success"
+          element={
+            <PrivateRoute>
+              <TrainingPageSuccess openAuthModal={openAuthModal} />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/training/:courseId/:workoutId/updated"
           element={
             <PrivateRoute>
-              <TrainingPageUpdated />
+              <TrainingPageUpdated openAuthModal={openAuthModal} />
             </PrivateRoute>
           }
         />
       </Routes>
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={closeAuthModal}
+        onLogin={login}
+        onRegister={register}
+      />
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }

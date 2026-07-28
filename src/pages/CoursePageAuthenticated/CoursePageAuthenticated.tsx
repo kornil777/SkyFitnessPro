@@ -9,8 +9,12 @@ import Header from '../../components/Header/Header';
 import { getCourseImage } from '../../utils/imageMap';
 import type { Course } from '../../types/course.types';
 import styles from './CoursePageAuthenticated.module.css';
+import Loader from '../../components/Loader/Loader';
 
-const CoursePageAuthenticated: React.FC = () => {
+interface CoursePageAuthenticatedProps {
+  openAuthModal: () => void;}
+
+const CoursePageAuthenticated: React.FC<CoursePageAuthenticatedProps> = ({ openAuthModal }) => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { user, logout, refreshUser } = useAuth();
@@ -74,14 +78,14 @@ const CoursePageAuthenticated: React.FC = () => {
     }
   };
 
-  if (loading) return <div className={styles.loading}>Загрузка курса...</div>;
+  if (loading) return <Loader fullPage />;
   if (error || !course) return <div className={styles.error}>Ошибка: {error || 'Курс не найден'}</div>;
 
   const imageUrl = getCourseImage(course.nameRU);
 
   return (
     <div className={styles.page}>
-      <Header />
+      <Header openAuthModal={openAuthModal} />
 
       <main className={styles.content}>
         <p className={styles.subtitle}>Онлайн-тренировки для занятий дома</p>
@@ -116,10 +120,7 @@ const CoursePageAuthenticated: React.FC = () => {
           </div>
         </div>
 
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>Описание</h2>
-          <p className={styles.description}>{course.description}</p>
-        </div>
+        
 
         <div className={styles.offerWrapper}>
           <div className={styles.offerBlock}>
