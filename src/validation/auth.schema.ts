@@ -9,10 +9,7 @@ export const registerSchema = z.object({
   name: z.string().min(2, 'Имя должно содержать минимум 2 символа'),
   email: z.string().email('Неверный формат email'),
   password: z.string().min(6, 'Пароль должен содержать минимум 6 символов'),
-  confirmPassword: z.string().min(6, 'Подтверждение пароля обязательно'),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'Пароли не совпадают',
-  path: ['confirmPassword'],
+  
 });
 
 export type LoginFormData = z.infer<typeof loginSchema>;

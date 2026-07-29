@@ -6,9 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import { fetchUserData } from '../../api/purchases';
 import { fetchCourses } from '../../api/courses';
 import { getCourseProgress } from '../../api/progress';
-import UserProfile from '../../components/UserProfile/UserProfile';
 import DeleteIcon from '../../components/DeleteIcon/DeleteIcon';
-import TrainingModal from '../../components/TrainingModal/TrainingModal';
 import WorkoutChoiceModal from '../../components/WorkoutChoiceModal/WorkoutChoiceModal';
 import { getCourseImage } from '../../utils/imageMap';
 import type { Course } from '../../types/course.types';
@@ -31,8 +29,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
   const { user, logout } = useAuth();
   const [courses, setCourses] = useState<CourseWithProgress[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCourse, setSelectedCourse] = useState<CourseWithProgress | null>(null);
-  const [isTrainingModalOpen, setIsTrainingModalOpen] = useState(false);
   const [showWorkoutChoice, setShowWorkoutChoice] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
 
@@ -57,42 +53,31 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
           courseIds.includes(course._id)
         );
 
-        // Для каждого курса получаем прогресс
         const coursesWithProgressPromises = userCourses.map(async (course) => {
           let progress = 0;
           try {
             const progressData = await getCourseProgress(course._id);
             if (progressData && progressData.workoutsProgress) {
-              // Вычисляем прогресс по каждой тренировке
               const workouts = progressData.workoutsProgress;
               let totalProgress = 0;
-              let completedWorkouts = 0;
               workouts.forEach((w) => {
-                // Если есть данные по упражнениям
                 if (w.progressData && w.progressData.length > 0) {
-                  // Средний прогресс упражнений в этой тренировке
                   const avg = w.progressData.reduce((a, b) => a + b, 0) / w.progressData.length;
                   totalProgress += avg;
                 }
-                // Если тренировка полностью завершена (по флагу)
                 if (w.workoutCompleted) {
-                  totalProgress += 100; // можно добавить, но лучше использовать среднее
+                  totalProgress += 100;
                 }
               });
-              // Прогресс курса = средний прогресс по всем тренировкам (или суммарный)
-              // Если тренировок нет, то 0
               if (workouts.length > 0) {
-                // Берем среднее арифметическое прогресса каждой тренировки
                 const avgProgress = totalProgress / workouts.length;
                 progress = Math.min(Math.round(avgProgress), 100);
               }
             }
           } catch {
-            // Если ошибка при получении прогресса, оставляем 0
             progress = 0;
           }
 
-          // Определяем текст кнопки (если прогресс 0, то "Начать тренировки", иначе "Продолжить")
           const buttonText = progress > 0 ? 'Продолжить' : 'Начать тренировки';
 
           return {
@@ -114,12 +99,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
     loadUserCourses();
   }, [user]);
 
-  const handleProfileClick = () => navigate('/profile');
   const handleLogout = () => {
     logout();
     navigate('/');
   };
-  const handleAddCourse = () => navigate('/');
 
   const handleDeleteCourse = (courseId: string) => {
     setCourses(prev =>
@@ -137,14 +120,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
     setSelectedCourseId(null);
   };
 
-  const handleStartSelectedTrainings = (selectedTrainingIds: number[]) => {
-    if (selectedCourse && selectedCourse.workouts && selectedCourse.workouts.length > 0) {
-      const firstWorkoutId = selectedCourse.workouts[0];
-      navigate(`/training/${selectedCourse._id}/${firstWorkoutId}`);
-    }
-    setIsTrainingModalOpen(false);
-  };
-
   const userLogin = user?.email ? user.email.split('@')[0] : '';
 
   if (loading) return <Loader fullPage />;
@@ -153,7 +128,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
     <div className={styles.page}>
       <Header openAuthModal={openAuthModal} />
       
-
       <div className={styles.contentBlock}>
         <h1 className={styles.profileTitle}>Профиль</h1>
 
@@ -228,18 +202,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
 
       {/* Модалка выбора тренировки */}
       {showWorkoutChoice && selectedCourseId && (
-  <WorkoutChoiceModal
-    courseId={selectedCourseId}
-    onClose={handleCloseWorkoutChoice}
-    
-  />
-)}
-      {selectedCourse && (
-        <TrainingModal
-          isOpen={isTrainingModalOpen}
-          onClose={() => setIsTrainingModalOpen(false)}
-          courseTitle={selectedCourse.nameRU}
-          onStartTraining={handleStartSelectedTrainings}
+        <WorkoutChoiceModal
+          courseId={selectedCourseId}
+          onClose={handleCloseWorkoutChoice}
         />
       )}
     </div>

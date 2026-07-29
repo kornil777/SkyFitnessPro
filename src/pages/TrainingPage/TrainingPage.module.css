@@ -141,3 +141,35 @@
   font-size: 24px;
   font-family: 'Roboto', sans-serif;
 }
+
+@media (max-width: 480px) {
+  .page {
+    padding: 0 16px;
+  }
+  .title {
+    font-size: 28px;
+  }
+  .titleSub {
+    font-size: 18px;
+  }
+  .videoContainer {
+    height: auto;
+    aspect-ratio: 16/9;
+  }
+  .exercisesBlock {
+    padding: 20px;
+  }
+  .exercisesGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .exerciseItem {
+    gap: 8px;
+  }
+  .exerciseText {
+    font-size: 16px;
+  }
+  .progressButton {
+    width: 100%;
+  }
+}

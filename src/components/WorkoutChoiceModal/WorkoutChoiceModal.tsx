@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { getCourseWorkouts } from '../../api/workouts';
 import type { Workout } from '../../types/course.types';
@@ -20,7 +21,6 @@ const WorkoutChoiceModal: React.FC<WorkoutChoiceModalProps> = ({ courseId, onClo
     const loadWorkouts = async () => {
       try {
         const data = await getCourseWorkouts(courseId);
-        // Сортируем тренировки по извлечённому номеру
         const sorted = data.sort((a, b) => {
           const numA = extractNumber(a.name);
           const numB = extractNumber(b.name);
@@ -39,16 +39,13 @@ const WorkoutChoiceModal: React.FC<WorkoutChoiceModalProps> = ({ courseId, onClo
     loadWorkouts();
   }, [courseId]);
 
-  // Функция извлечения номера из названия тренировки
   const extractNumber = (name: string): number => {
-    // Ищем число в строке (поддерживаем форматы: "1 день", "Урок 2", "2/3" и т.д.)
     const match = name.match(/\d+/);
     if (match) {
       return parseInt(match[0], 10);
     }
-    return Infinity; // если нет номера, ставим в конец
+    return Infinity;
   };
-  
 
   const handleSelect = (workoutId: string) => {
     setSelectedWorkoutId(workoutId);
@@ -85,7 +82,7 @@ const WorkoutChoiceModal: React.FC<WorkoutChoiceModalProps> = ({ courseId, onClo
   if (loading) return <div className={styles.loading}>Загрузка...</div>;
   if (error) return <div className={styles.error}>Ошибка: {error}</div>;
 
-  return (
+  const modalContent = (
     <div className={styles.overlay} onClick={handleOverlayClick}>
       <div className={styles.container} onClick={(e) => e.stopPropagation()}>
         <button className={styles.closeButton} onClick={onClose}>✕</button>
@@ -112,7 +109,7 @@ const WorkoutChoiceModal: React.FC<WorkoutChoiceModalProps> = ({ courseId, onClo
                   </div>
                 </div>
                 <div className={styles.textBlock}>
-                  <span className={styles.title}>{title}</span>
+                  <span className={styles.titleText}>{title}</span>
                   {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
                 </div>
               </li>
@@ -129,6 +126,8 @@ const WorkoutChoiceModal: React.FC<WorkoutChoiceModalProps> = ({ courseId, onClo
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(modalContent, document.body);
 };
 
 export default WorkoutChoiceModal;

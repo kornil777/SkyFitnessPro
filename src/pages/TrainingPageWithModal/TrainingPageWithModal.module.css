@@ -247,3 +247,53 @@
 .closeButton:hover {
   opacity: 0.6;
 }
+
+@media (max-width: 480px) {
+  .page {
+    padding: 0 16px;
+  }
+  .title {
+    font-size: 28px;
+  }
+  .titleSub {
+    font-size: 18px;
+  }
+  .videoContainer {
+    height: auto;
+    aspect-ratio: 16/9;
+  }
+  .exercisesBlock {
+    padding: 20px;
+  }
+  .exercisesGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .exerciseItem {
+    gap: 8px;
+  }
+  .exerciseText {
+    font-size: 16px;
+  }
+  .progressButton {
+    width: 100%;
+  }
+  .modalContainer {
+    width: 90%;
+    max-height: 90vh;
+    padding: 24px;
+    gap: 24px;
+  }
+  .modalTitle {
+    font-size: 24px;
+  }
+  .inputField {
+    height: 44px;
+    font-size: 16px;
+    padding: 12px 14px;
+  }
+  .saveButton {
+    height: 44px;
+    font-size: 16px;
+  }
+}

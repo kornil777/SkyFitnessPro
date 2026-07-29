@@ -2,13 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import { fetchCourseById } from '../../api/courses';
-import { getCourseImage } from '../../utils/imageMap';
+import { addCourseToUser, removeCourseFromUser, checkUserHasCourse } from '../../api/purchases';
 import Header from '../../components/Header/Header';
+import CourseBanner from '../../components/CourseBanner/CourseBanner';
+import Loader from '../../components/Loader/Loader';
+import { getCourseImage } from '../../utils/imageMap';
 import type { Course } from '../../types/course.types';
 import styles from './CoursePage.module.css';
-import Loader from '../../components/Loader/Loader';
-import CourseBanner from '../../components/CourseBanner/CourseBanner';
 
 interface CoursePageProps {
   openAuthModal: () => void;
@@ -17,9 +19,12 @@ interface CoursePageProps {
 const CoursePage: React.FC<CoursePageProps> = ({ openAuthModal }) => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const { user, isAuthenticated, logout, refreshUser } = useAuth();
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isCourseAdded, setIsCourseAdded] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
     const loadCourse = async () => {
@@ -31,6 +36,10 @@ const CoursePage: React.FC<CoursePageProps> = ({ openAuthModal }) => {
       try {
         const data = await fetchCourseById(id);
         setCourse(data);
+        if (isAuthenticated && user) {
+          const has = await checkUserHasCourse(id);
+          setIsCourseAdded(has);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Ошибка загрузки курса');
       } finally {
@@ -38,26 +47,59 @@ const CoursePage: React.FC<CoursePageProps> = ({ openAuthModal }) => {
       }
     };
     loadCourse();
-  }, [id]);
+  }, [id, isAuthenticated, user]);
 
-  const handleLoginClick = () => {
-    openAuthModal(); 
+  const handleAddCourse = async () => {
+    if (!id) return;
+    setIsAdding(true);
+    try {
+      await addCourseToUser(id);
+      await refreshUser();
+      setIsCourseAdded(true);
+    } catch (err) {
+      console.error('Ошибка добавления курса:', err);
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const handleRemoveCourse = async () => {
+    if (!id) return;
+    try {
+      await removeCourseFromUser(id);
+      await refreshUser();
+      setIsCourseAdded(false);
+    } catch (err) {
+      console.error('Ошибка удаления курса:', err);
+    }
   };
 
   if (loading) return <Loader fullPage />;
   if (error || !course) return <div className={styles.error}>Ошибка: {error || 'Курс не найден'}</div>;
 
-  const imageUrl = getCourseImage(course.nameRU);
-
   return (
     <div className={styles.page}>
       <Header openAuthModal={openAuthModal} />
+
       <main className={styles.content}>
         <p className={styles.subtitle}>Онлайн-тренировки для занятий дома</p>
-        <CourseBanner nameRU={course.nameRU} />
+
+        {/* Баннер: десктопная и мобильная версии */}
+        <div className={styles.bannerWrapper}>
+          <div className={styles.bannerDesktop}>
+            <CourseBanner nameRU={course.nameRU} />
+          </div>
+          <div className={styles.bannerMobile}>
+            <img
+              src={getCourseImage(course.nameRU)}
+              alt={course.nameRU}
+              className={styles.mobileCourseImage}
+            />
+          </div>
+        </div>
+
         <h1 className={styles.courseTitle}>{course.nameRU}</h1>
 
-        {/* Блок "Подойдет для вас, если:" */}
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Подойдет для вас, если:</h2>
           <div className={styles.fittingCards}>
@@ -70,22 +112,25 @@ const CoursePage: React.FC<CoursePageProps> = ({ openAuthModal }) => {
           </div>
         </div>
 
-        {/* Блок "Направления" */}
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Направления</h2>
           <div className={styles.directionsBlock}>
             {course.directions?.map((dir, index) => (
               <div key={index} className={styles.directionItem}>
-                <span className={styles.directionIcon}><img src="/images/star.svg" alt="*" /></span>
+                <span className={styles.directionIcon}>
+                  <img src="/images/star.svg" alt="*" />
+                </span>
                 <span className={styles.directionText}>{dir}</span>
               </div>
             ))}
           </div>
         </div>
 
-        
+        <div className={styles.decorImages}>
+          <img src="/images/block4.svg" alt="Decorative 1" className={styles.block4} />
+          <img src="/images/block5.svg" alt="Decorative 2" className={styles.block5} />
+        </div>
 
-        {/* Блок с предложением */}
         <div className={styles.offerWrapper}>
           <div className={styles.offerBlock}>
             <div className={styles.offerContent}>
@@ -97,13 +142,33 @@ const CoursePage: React.FC<CoursePageProps> = ({ openAuthModal }) => {
                 <li>упражнения заряжают бодростью</li>
                 <li>помогают противостоять стрессам</li>
               </ul>
-              <button className={styles.offerButton} onClick={handleLoginClick}>
-                Войдите, чтобы добавить курс
-              </button>
-            </div>
-            <div className={styles.decorImages}>
-              <img src="/images/block4.svg" alt="Decorative 1" className={styles.block4} />
-              <img src="/images/block5.svg" alt="Decorative 2" className={styles.block5} />
+
+              {isAuthenticated ? (
+                isCourseAdded ? (
+                  <button
+                    className={styles.offerButton}
+                    onClick={handleRemoveCourse}
+                    disabled={isAdding}
+                  >
+                    Удалить курс
+                  </button>
+                ) : (
+                  <button
+                    className={styles.offerButton}
+                    onClick={handleAddCourse}
+                    disabled={isAdding}
+                  >
+                    {isAdding ? 'Добавление...' : 'Добавить курс'}
+                  </button>
+                )
+              ) : (
+                <button
+                  className={styles.offerButton}
+                  onClick={openAuthModal}
+                >
+                  Войдите, чтобы добавить курс
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -1,3 +1,5 @@
+// src/components/Register/Register.tsx
+
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -67,16 +69,6 @@ const Register: React.FC<RegisterProps> = ({
           <span className={styles.errorText}>{errors.password.message}</span>
         )}
 
-        <input
-          type="password"
-          placeholder="Повторить пароль"
-          className={styles.inputField}
-          {...register('confirmPassword')}
-        />
-        {errors.confirmPassword && (
-          <span className={styles.errorText}>{errors.confirmPassword.message}</span>
-        )}
-
         {errorMessage && (
           <div className={styles.errorMessage}>{errorMessage}</div>
         )}
@@ -87,6 +79,14 @@ const Register: React.FC<RegisterProps> = ({
           disabled={isLoading}
         >
           {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
+        </button>
+
+        <button
+          type="button"
+          className={styles.switchToLoginButton}
+          onClick={onSwitchToLogin}
+        >
+          Войти
         </button>
       </form>
     </div>

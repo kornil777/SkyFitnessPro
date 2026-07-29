@@ -7,7 +7,6 @@ import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import AuthModal from './components/AuthModal/AuthModal';
 import CoursesPage from './pages/CoursesPage/CoursesPage';
 import CoursePage from './pages/CoursePage/CoursePage';
-import CoursePageAuthenticated from './pages/CoursePageAuthenticated/CoursePageAuthenticated';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import TrainingPage from './pages/TrainingPage/TrainingPage';
 import TrainingPageWithModal from './pages/TrainingPageWithModal/TrainingPageWithModal';
@@ -27,17 +26,10 @@ function App() {
           element={<CoursesPage openAuthModal={openAuthModal} />}
         />
         <Route
-          path="/course/:id"
-          element={<CoursePage openAuthModal={openAuthModal} />}
-        />
-        <Route
-          path="/course/:id/authenticated"
-          element={
-            <PrivateRoute>
-              <CoursePageAuthenticated openAuthModal={openAuthModal} />
-            </PrivateRoute>
-          }
-        />
+  path="/course/:id"
+  element={<CoursePage openAuthModal={openAuthModal} />}
+/>
+        
         <Route
           path="/profile"
           element={

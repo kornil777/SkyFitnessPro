@@ -16,12 +16,8 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isAuthenticated = false
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    if (isAuthenticated) {
-      navigate(`/course/${course._id}/authenticated`);
-    } else {
-      navigate(`/course/${course._id}`);
-    }
-  };
+  navigate(`/course/${course._id}`);
+};
 
   // Маппинг названий курсов к локальным картинкам
   const imageMap: Record<string, string> = {

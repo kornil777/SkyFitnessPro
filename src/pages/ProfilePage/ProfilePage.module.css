@@ -1,44 +1,27 @@
-.userProfileWrapper {
-  top: 46px;
-  left: 1132px;
-  width: 168.35px;
-  height: 50px;
-  z-index: 1000;
-  position: absolute;
-}
+/* src/pages/ProfilePage/ProfilePage.module.css */
 
 .page {
   width: 100%;
   max-width: 1440px;
   min-height: 100vh;
-  background: #fafafa;
-  position: relative;
+  background: #FAFAFA;
   margin: 0 auto;
-}
-
-.logo {
-  position: absolute;
-  top: 51px;
-  left: 140px;
-  width: 220px;
-  height: 35px;
-  object-fit: contain;
+  padding: 0 140px;
+  box-sizing: border-box;
 }
 
 .contentBlock {
-  width: 1160px;
-  height: 1134px;
-  position: absolute;
-  top: 145px;
-  left: 140px;
+  width: 100%;
+  max-width: 1160px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 60px;
+  padding: 20px 0 60px;
+  box-sizing: border-box;
 }
 
 .profileTitle {
-  width: 810px;
-  height: 44px;
   font-family: "Roboto", sans-serif;
   font-weight: 600;
   font-size: 40px;
@@ -48,8 +31,7 @@
 }
 
 .profileCard {
-  width: 1160px;
-  height: 257px;
+  width: 100%;
   border-radius: 30px;
   padding: 30px;
   background: #ffffff;
@@ -58,34 +40,32 @@
 }
 
 .profileInner {
-  width: 530px;
-  height: 197px;
   display: flex;
   gap: 33px;
+  align-items: center;
 }
 
 .profileIcon {
   width: 197px;
   height: 197px;
+  flex-shrink: 0;
 }
 
 .profileIcon img {
-  width: 197px;
-  height: 197px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  border-radius: 50%;
 }
 
 .profileInfo {
-  width: 300px;
-  height: 197px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  flex: 1;
 }
 
 .profileName {
-  width: 300px;
-  height: 35px;
   font-family: "Roboto", sans-serif;
   font-weight: 500;
   font-size: 32px;
@@ -95,8 +75,6 @@
 }
 
 .profileLogin {
-  width: 300px;
-  height: 20px;
   font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-size: 18px;
@@ -122,16 +100,12 @@
 }
 
 .coursesSection {
-  width: 1160px;
-  height: 733px;
   display: flex;
   flex-direction: column;
   gap: 40px;
 }
 
 .coursesTitle {
-  width: 810px;
-  height: 44px;
   font-family: "Roboto", sans-serif;
   font-weight: 600;
   font-size: 40px;
@@ -141,15 +115,12 @@
 }
 
 .coursesGrid {
-  width: 1160px;
-  height: 649px;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 40px;
 }
 
 .courseCard {
-  width: 360px;
-  height: 649px;
   border-radius: 30px;
   background: #ffffff;
   box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
@@ -159,6 +130,13 @@
   cursor: pointer;
 }
 
+.imageContainer {
+  width: 100%;
+  height: 325px;
+  position: relative;
+  overflow: hidden;
+}
+
 .courseImage {
   width: 100%;
   height: 100%;
@@ -166,17 +144,14 @@
 }
 
 .courseContent {
-  width: 300px;
-  height: 285px;
-  margin: 24px 30px 0 30px;
+  padding: 24px 30px 30px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  flex: 1;
 }
 
 .courseTitle {
-  width: 300px;
-  height: 35px;
   font-family: "Roboto", sans-serif;
   font-weight: 500;
   font-size: 32px;
@@ -186,39 +161,35 @@
 }
 
 .iconsRow {
-  width: 300px;
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
 }
 
+.daysIcon,
+.timeIcon,
+.difficultyIcon {
+  height: 38px;
+  object-fit: contain;
+}
+
 .daysIcon {
   width: 103px;
-  height: 38px;
 }
-
 .timeIcon {
   width: 163px;
-  height: 38px;
 }
-
 .difficultyIcon {
   width: 129px;
-  height: 38px;
-  display: block;
 }
 
 .progressSection {
-  width: 300px;
-  height: 36px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
 .progressText {
-  width: 128px;
-  height: 20px;
   font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-size: 18px;
@@ -228,7 +199,7 @@
 }
 
 .progressBarBg {
-  width: 300px;
+  width: 100%;
   height: 6px;
   border-radius: 50px;
   background: #f7f7f7;
@@ -245,7 +216,7 @@
 }
 
 .courseButton {
-  width: 300px;
+  width: 100%;
   height: 52px;
   border-radius: 46px;
   padding: 16px 26px;
@@ -258,15 +229,7 @@
   color: #000000;
   cursor: pointer;
   box-sizing: border-box;
-  width: 100%; /* или фиксированная ширина с margin: 0 auto */
-  margin-top: auto; /* чтобы прижать к низу */
-}
-
-.imageContainer {
-  width: 360px;
-  height: 325px;
-  position: relative;
-  overflow: hidden;
+  margin-top: auto;
 }
 
 .deletedCourse {
@@ -285,100 +248,59 @@
   pointer-events: none;
 }
 
+/* Адаптив для мобильных устройств */
 @media (max-width: 480px) {
   .page {
     padding: 0 16px;
   }
 
-  .profileCard {
-    width: 343px;
-    display: flex;
-    height: 365px;
-  }
-
   .profileTitle {
-    font-size: 24px;
+    font-size: 28px;
   }
 
-  .logoutButton {
-    width: 283px;
-    height: 50px;
+  .profileCard {
+    padding: 20px;
   }
 
   .profileInner {
-    display: flex;
     flex-direction: column;
     align-items: center;
-    width: 343px;
-    height: 365px;
-  }
-  .profileIcon {
-    width: 141px;
-    height: 141px;
+    text-align: center;
   }
 
-  .profileIcon img {
-    width: 141px;
-    height: 141px;
-    object-fit: cover;
+  .profileIcon {
+    width: 120px;
+    height: 120px;
   }
 
   .profileInfo {
+    align-items: center;
   }
 
-  .coursesSection {
-    width: 1160px;
-    height: 733px;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
+  .logoutButton {
+    width: 100%;
   }
 
   .coursesTitle {
-    width: 810px;
-    height: 44px;
-    font-family: "Roboto", sans-serif;
-    font-weight: 600;
-    font-size: 32px;
-    line-height: 110%;
-    color: #000000;
-    margin: 0;
-  }
-
-  .courseCard {
-    width: 343px;
-  }
-
-  .courseImage {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .courseContent {
-    width: 300px;
-    height: 285px;
-    margin: 24px 30px 0 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .courseTitle {
-    width: 300px;
-    height: 35px;
-    font-size: 32px;
+    font-size: 28px;
   }
 
   .coursesGrid {
-    display: grid;
-  }
-  .courseImage {
-    width: 343px;
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 
-  .contentBlock {
-    left: 16px;
-    gap: 24px;
+  .courseCard {
+    width: 100%;
+    max-width: 343px;
+    margin: 0 auto;
+  }
+
+  .courseContent {
+    padding: 20px;
+  }
+
+  .imageContainer {
+    height: 250px;
   }
 }
