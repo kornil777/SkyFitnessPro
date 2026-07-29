@@ -1,93 +1,83 @@
-.userProfileWrapper {
-    position: absolute;
-    top: 46px;
-    left: 1132px;
-    width: 168.35px;
-    height: 50px;
-    z-index: 1000;
-}
+/* src/pages/CoursesPage/CoursesPage.module.css */
 
 .page {
-    width: 1440px;
-    min-height: 1559px;
-    background: #FAFAFA;
-    position: relative;
-    margin: 0 auto;
+  width: 100%;
+  max-width: 1440px;
+  min-height: 100vh;
+  background: #FAFAFA;
+  margin: 0 auto;
+  padding: 0 140px;
+  box-sizing: border-box;
 }
 
-.logo {
-    position: absolute;
-    top: 50px;
-    left: 140px;
-    width: 220px;
-    height: 35px;
-    object-fit: contain;
-}
-
-.loginButton {
-    position: absolute;
-    top: 50px;
-    left: 1197px;
-    width: 103px;
-    height: 52px;
-    background: #BCEC30;
-    border-radius: 46px;
-    padding: 16px 26px;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-    font-family: 'Roboto', sans-serif;
-    font-size: 16px;
-    color: #000000;
-    font-weight: 500;
+.content {
+  width: 100%;
+  max-width: 1160px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 20px 0 60px;
 }
 
 .subtitle {
-    position: absolute;
-    top: 100px;
-    left: 140px;
-    width: 327px;
-    height: 20px;
-    font-family: 'Roboto', sans-serif;
-    font-size: 18px;
-    line-height: 110%;
-    color: #000000;
-    opacity: 0.5;
-    margin: 0;
+  font-size: 18px;
+  color: #000;
+  opacity: 0.5;
+  margin: 0;
 }
 
 .title {
-    position: absolute;
-    top: 180px;
-    left: 140px;
-    width: 947px;
-    height: 120px;
-    font-family: 'Roboto', sans-serif;
-    font-size: 60px;
-    font-weight: 500;
-    line-height: 100%;
-    color: #000000;
-    margin-top: 8px;
+  font-size: 60px;
+  font-weight: 500;
+  line-height: 100%;
+  color: #000;
+  margin: 0;
 }
 
 .greenBlock {
-    position: absolute;
-    top: 180px;
-    left: 1011px;
-    width: 288px;
-    height: 120.17px;
-    object-fit: contain;
+  width: 288px;
+  height: 120px;
+  object-fit: contain;
 }
 
 .coursesGrid {
-    position: absolute;
-    top: 350px;
-    left: 140px;
-    display: flex;
-    gap: 30px;
-    flex-wrap: wrap;
-    width: 1200px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  width: 100%;
+}
+
+/* Адаптив для мобильных устройств 375px */
+@media (max-width: 480px) {
+  .page {
+    padding: 0 16px;
+  }
+
+  .subtitle {
+    display: none;
+  }
+
+  .title {
+    font-size: 32px;
+    line-height: 110%;
+    
+  }
+
+  .greenBlock {
+    display: none;
+  }
+
+  .coursesGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    justify-items: center;
+  }
+
+  .content {
+    gap: 24px;
+    padding: 12px 0 40px;
+  }
+
+
 }

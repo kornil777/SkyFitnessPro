@@ -1,7 +1,7 @@
 /* Общие стили для страницы курса */
 
 .page {
-  background: #FAFAFA;
+  background: #fafafa;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -28,10 +28,10 @@
 .loginButton {
   width: 103px;
   height: 52px;
-  background: #BCEC30;
+  background: #bcec30;
   border-radius: 46px;
   border: none;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 18px;
   font-weight: 400;
   color: #000;
@@ -109,7 +109,7 @@
   content: "•";
   position: absolute;
   left: 0;
-  color: #BCEC30;
+  color: #bcec30;
   font-weight: bold;
 }
 
@@ -120,7 +120,7 @@
 }
 
 .tag {
-  background: #F0F0F0;
+  background: #f0f0f0;
   border-radius: 20px;
   padding: 8px 16px;
   font-size: 16px;
@@ -138,20 +138,21 @@
 .offerWrapper {
   width: 100%;
   max-width: 1160px;
-  height: 588px;
   position: relative;
-  overflow: hidden; /* обрезаем всё, что выходит за пределы */
-   display: flex;
-   flex-direction: column;
-   justify-content: end; 
-   padding-bottom: 40px;
+  overflow-x: hidden; /* обрезаем только по горизонтали */
+  overflow-y: visible; /* по вертикали не обрезаем */
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  padding-bottom: 40px;
+  top: 100px;
 }
 
 .offerBlock {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #FFFFFF;
+  background: #ffffff;
   padding: 40px;
   min-height: 400px;
   gap: 20px;
@@ -191,7 +192,7 @@
   width: 100%;
   max-width: 437px;
   height: 52px;
-  background: #BCEC30;
+  background: #bcec30;
   border-radius: 46px;
   border: none;
   font-size: 18px;
@@ -205,9 +206,11 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  position: relative;
-  width: 50%;
+  position: absolute;
+  top: 1250px;
+  right: 170px;
   min-height: 400px;
+
   /* overflow: hidden больше не нужен, т.к. обрезает обёртка */
 }
 
@@ -224,20 +227,19 @@
 
 .block5 {
   position: absolute;
-    width: 670px;
-    height: 390px;
-    right: -35px;
-    bottom: -120px;
-    transform: rotate(5.38deg);
-    z-index: 1;
-    object-fit: contain;
-    top: 14%;
+  width: 670px;
+  height: 390px;
+  right: -35px;
+  bottom: -120px;
+  transform: rotate(5.38deg);
+  z-index: 1;
+  object-fit: contain;
+  top: 14%;
 }
 
 .offerImage {
-width: 1160px;
-height: 588px;
-
+  width: 1160px;
+  height: 588px;
 }
 
 .loading,
@@ -247,7 +249,7 @@ height: 588px;
   justify-content: center;
   height: 100vh;
   font-size: 24px;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .fittingCards {
@@ -256,13 +258,11 @@ height: 588px;
   gap: 10px;
 }
 
-
-
 .cardNumber {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 500;
   font-size: 75px;
-  color: #BCEC30;
+  color: #bcec30;
   line-height: 1;
   flex-shrink: 0;
   width: 50px; /* чтобы цифры были на одном месте */
@@ -270,11 +270,11 @@ height: 588px;
 }
 
 .cardText {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-size: 24px;
   line-height: 1.3;
-  color: #FFFFFF;
+  color: #ffffff;
   margin: 0;
 }
 
@@ -302,7 +302,7 @@ height: 588px;
   font-size: 24px;
   font-weight: 400;
   line-height: 110%;
-  color: #FFFFFF;
+  color: #ffffff;
   margin: 0;
   padding-right: 20px;
 }
@@ -311,7 +311,7 @@ height: 588px;
   font-size: 75px;
   font-weight: 500;
   line-height: 110%;
-  color: #BCEC30;
+  color: #bcec30;
   flex-shrink: 0;
   width: 35px;
   text-align: right;
@@ -319,7 +319,7 @@ height: 588px;
 
 /* Блок "Направления" */
 .directionsBlock {
-  background: #BCEC30;
+  background: #bcec30;
   border-radius: 28px;
   padding: 30px;
   display: grid;
@@ -349,6 +349,124 @@ height: 588px;
   font-weight: 400;
 }
 
+.bannerWrapper {
+  width: 100%;
+}
 
+.bannerDesktop {
+  display: block;
+}
+
+.bannerMobile {
+  display: none;
+}
+
+.mobileCourseImage {
+  width: 100%;
+  max-width: 343px;
+  height: auto;
+  border-radius: 30px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 0 16px;
+    overflow-x: hidden;
+  }
+  .subtitle {
+    display: none;
+  }
+
+  .courseTitle {
+    display: none;
+  }
+  .sectionTitle {
+    font-size: 24px;
+    font-weight: 500;
+    padding-top: 40px;
+  }
+  .fittingCards {
+    flex-direction: column;
+  }
+  .cardText {
+    font-size: 18px;
+  }
+
+  .directionsBlock {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  .directionText {
+    font-size: 18px;
+  }
+  .offerTitle {
+    font-size: 32px;
+  }
+  .offerDescription {
+    font-size: 18px;
+  }
+  
+
+  .offerWrapper {
+    overflow: visible;
+
+    justify-content: flex-start;
+    padding-bottom: 0;
+  }
+  .block4 {
+    width: 313px;
+    height: 348px;
+
+    left: 97px;
+  }
+
+  .block5 {
+    width: 431px;
+    height: 251px;
+    left: -54px;
+  }
+  .offerBlock {
+    display: block;
+    z-index: 3;
+    top: -345px;
+    position: absolute;
+    
+    width: 343px;
+    padding: 30px;
+  }
+
+  .offerDescription{
+    padding-left: 15px;
+  }
+
+  .offerButton {
+    font-size: 16px;
+    width: 283px;
+    height: 50px;
+  }
+
+  .content {
+    display: block;
+  }
+
+  .bannerDesktop {
+    display: none;
+  }
+  .bannerMobile {
+    display: block;
+    padding-top: 40px;
+  }
+
+  .decorImages {
+    position: relative;
+    top: 50px;
+    right: -10px;
+  }
+}
 
 /* Адаптив для маленьких экранов можно добавить позже */

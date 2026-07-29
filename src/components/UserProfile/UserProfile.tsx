@@ -20,6 +20,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleIconClick = () => {
+    
     setIsModalOpen(!isModalOpen);
   };
 

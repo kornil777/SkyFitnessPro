@@ -91,8 +91,15 @@ const CoursePageAuthenticated: React.FC<CoursePageAuthenticatedProps> = ({ openA
       <main className={styles.content}>
         <p className={styles.subtitle}>Онлайн-тренировки для занятий дома</p>
 
-        <CourseBanner nameRU={course.nameRU} />
-        <h1 className={styles.courseTitle}>{course.nameRU}</h1>
+        <div className={styles.bannerWrapper}>
+  <div className={styles.bannerDesktop}>
+    <CourseBanner nameRU={course.nameRU} />
+  </div>
+  <div className={styles.bannerMobile}>
+    <img src={getCourseImage(course.nameRU)} alt={course.nameRU} className={styles.mobileCourseImage} />
+  </div>
+</div>
+<h1 className={styles.courseTitle}>{course.nameRU}</h1>
 
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Подойдет для вас, если:</h2>
@@ -120,9 +127,13 @@ const CoursePageAuthenticated: React.FC<CoursePageAuthenticatedProps> = ({ openA
           </div>
         </div>
 
-        
+        <div className={styles.decorImages}>
+              <img src="/images/block4.svg" alt="Decorative 1" className={styles.block4} />
+              <img src="/images/block5.svg" alt="Decorative 2" className={styles.block5} />
+            </div>
 
         <div className={styles.offerWrapper}>
+
           <div className={styles.offerBlock}>
             <div className={styles.offerContent}>
               <h3 className={styles.offerTitle}>Начните путь <br />к новому телу</h3>
@@ -151,11 +162,9 @@ const CoursePageAuthenticated: React.FC<CoursePageAuthenticatedProps> = ({ openA
                 </button>
               )}
             </div>
-            <div className={styles.decorImages}>
-              <img src="/images/block4.svg" alt="Decorative 1" className={styles.block4} />
-              <img src="/images/block5.svg" alt="Decorative 2" className={styles.block5} />
             </div>
-          </div>
+            
+          
         </div>
       </main>
     </div>

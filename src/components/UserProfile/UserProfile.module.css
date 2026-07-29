@@ -51,3 +51,33 @@
     border-right: none;
     margin-left: 12px;
 }
+
+/* Адаптив для мобильных устройств */
+@media (max-width: 480px) {
+  @media (max-width: 480px) {
+  .userProfile {
+    width: auto;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 0;
+  }
+}
+
+  .profileData {
+    display: none; /* скрываем имя */
+  }
+
+
+
+  .profileIcon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .profileIcon img {
+    width: 36px;
+    height: 36px;
+  }
+}

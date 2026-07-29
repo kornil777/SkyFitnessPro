@@ -30,3 +30,15 @@
   line-height: 1.1;
   text-align: left;
 }
+
+@media (max-width: 480px) {
+    .title {
+        display: none;
+    }
+    .sportImage{
+        width: 749px;
+        height: 557px;
+        top: -57px;
+        
+    }
+}
