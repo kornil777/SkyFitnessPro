@@ -34,7 +34,7 @@ const Login: React.FC<LoginProps> = ({
 
   return (
     <div className={styles.loginContainer}>
-      <img src="/images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
+      <img src="images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
 
       <form className={styles.formContainer} onSubmit={handleSubmit(onSubmit)}>
         <input

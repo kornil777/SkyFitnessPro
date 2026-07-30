@@ -118,7 +118,7 @@ const CoursePage: React.FC<CoursePageProps> = ({ openAuthModal }) => {
             {course.directions?.map((dir, index) => (
               <div key={index} className={styles.directionItem}>
                 <span className={styles.directionIcon}>
-                  <img src="/images/star.svg" alt="*" />
+                  <img src="images/star.svg" alt="*" />
                 </span>
                 <span className={styles.directionText}>{dir}</span>
               </div>

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { getCourseWorkouts } from '../../api/workouts';
 import type { Workout } from '../../types/course.types';
 import styles from './WorkoutChoiceModal.module.css';
+import Loader from '../Loader/Loader';
 
 interface WorkoutChoiceModalProps {
   courseId: string;
@@ -79,7 +80,7 @@ const WorkoutChoiceModal: React.FC<WorkoutChoiceModalProps> = ({ courseId, onClo
     return { title: name.trim(), subtitle: '' };
   };
 
-  if (loading) return <div className={styles.loading}>Загрузка...</div>;
+  if (loading) return <Loader fullPage />;
   if (error) return <div className={styles.error}>Ошибка: {error}</div>;
 
   const modalContent = (

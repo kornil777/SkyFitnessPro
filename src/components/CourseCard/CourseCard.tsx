@@ -29,7 +29,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isAuthenticated = false
   };
 
   const imageFile = imageMap[course.nameRU] || 'card1.svg';
-  const imageUrl = `/images/${imageFile}`;
+  const imageUrl = `images/${imageFile}`;
 
   const durationDays = course.durationInDays || 25;
   const timeFrom = course.dailyDurationInMinutes?.from || 20;
@@ -55,19 +55,19 @@ const CourseCard: React.FC<CourseCardProps> = ({ course, isAuthenticated = false
 
         <div className={styles.firstRow}>
           <img
-            src="/images/25day.svg"
+            src="images/25day.svg"
             alt="25 дней"
             className={styles.daysIcon}
           />
           <img
-            src="/images/20min.svg"
+            src="images/20min.svg"
             alt="20-50 мин/день"
             className={styles.timeIcon}
           />
         </div>
 
         <img
-          src="/images/mult.svg"
+          src="images/mult.svg"
           alt="Сложность"
           className={styles.difficultyIcon}
         />

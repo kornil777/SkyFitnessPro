@@ -9,7 +9,7 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
-    return <div>Загрузка...</div>;
+    
   }
 
   if (!isAuthenticated) {

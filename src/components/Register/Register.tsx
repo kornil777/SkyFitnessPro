@@ -36,7 +36,7 @@ const Register: React.FC<RegisterProps> = ({
 
   return (
     <div className={styles.registerContainer}>
-      <img src="/images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
+      <img src="images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
 
       <form className={styles.formContainer} onSubmit={handleSubmit(onSubmit)}>
         <input

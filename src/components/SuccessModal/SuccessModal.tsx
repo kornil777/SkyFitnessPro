@@ -21,7 +21,7 @@ const SuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose }) => {
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <h2 className={styles.title}>Ваш прогресс<br />засчитан!</h2>
         <div className={styles.icon}>
-          <img src="/images/br1.svg" alt="Success" />
+          <img src="images/br1.svg" alt="Success" />
         </div>
       </div>
     </div>
