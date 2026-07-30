@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import ProfileModal from '../ProfileModal/ProfileModal';
-import styles from './UserProfile.module.css';
+import React, { useState } from "react";
+import ProfileModal from "../ProfileModal/ProfileModal";
+import styles from "./UserProfile.module.css";
 
 interface UserProfileProps {
   userName: string;
   userEmail: string;
   onProfileClick?: () => void;
   onLogout?: () => void;
-  onAddCourse?: () => void;
+  onAddCourse?: () => void; // Этот пропс может быть, но не передается в ProfileModal
 }
 
 const UserProfile: React.FC<UserProfileProps> = ({
@@ -16,18 +15,12 @@ const UserProfile: React.FC<UserProfileProps> = ({
   userEmail,
   onProfileClick,
   onLogout,
-  onAddCourse,
+  onAddCourse, // Получаем, но не передаем в ProfileModal
 }) => {
-  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleClick = () => {
-    const isMobile = window.matchMedia('(max-width: 480px)').matches;
-    if (isMobile) {
-      navigate('/profile');
-    } else {
-      setIsModalOpen(true);
-    }
+  const handleIconClick = () => {
+    setIsModalOpen(!isModalOpen);
   };
 
   const handleCloseModal = () => {
@@ -41,19 +34,27 @@ const UserProfile: React.FC<UserProfileProps> = ({
 
   const handleLogout = () => {
     setIsModalOpen(false);
-    if (onLogout) onLogout();
+    if (onLogout) {
+      onLogout();
+    }
   };
 
+  // Обработчик для добавления курса (если нужно)
   const handleAddCourse = () => {
     setIsModalOpen(false);
-    if (onAddCourse) onAddCourse();
+    if (onAddCourse) {
+      onAddCourse();
+    }
   };
 
   return (
     <>
-      <div className={styles.userProfile} onClick={handleClick}>
+      <div className={styles.userProfile} onClick={handleIconClick}>
         <div className={styles.profileIcon}>
-          <img src="/images/prof.svg" alt="Profile" />
+          <img
+            src={`${process.env.PUBLIC_URL}/images/prof.svg`}
+            alt="Profile"
+          />
         </div>
         <span className={styles.profileData}>{userName}</span>
         <div className={styles.arrowIcon} />
@@ -66,6 +67,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
         userEmail={userEmail}
         onProfileClick={handleProfileClick}
         onLogout={handleLogout}
+        // Убрали onAddCourse отсюда, так как его нет в ProfileModal
       />
     </>
   );

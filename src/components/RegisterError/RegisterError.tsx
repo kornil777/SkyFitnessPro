@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import styles from "./Register.module.css";
+import styles from "./RegisterError.module.css";
 
-interface RegisterProps {
+interface RegisterErrorProps {
   onSwitchToLogin: () => void;
   onClose: () => void;
+  errorMessage: string;
   onRegister: (email: string, password: string, name: string) => void;
 }
 
-const Register: React.FC<RegisterProps> = ({
+const RegisterError: React.FC<RegisterErrorProps> = ({
   onSwitchToLogin,
   onClose,
+  errorMessage,
   onRegister,
 }) => {
   const [email, setEmail] = useState("");
@@ -24,7 +26,7 @@ const Register: React.FC<RegisterProps> = ({
   };
 
   return (
-    <div className={styles.registerContainer}>
+    <div className={styles.registerErrorContainer}>
       <img
         src={`${process.env.PUBLIC_URL}/images/logo.svg`}
         alt="SkyFitnessPro"
@@ -64,6 +66,8 @@ const Register: React.FC<RegisterProps> = ({
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
 
+        <div className={styles.errorMessage}>{errorMessage}</div>
+
         <button className={styles.registerButton} onClick={handleRegister}>
           Зарегистрироваться
         </button>
@@ -72,4 +76,4 @@ const Register: React.FC<RegisterProps> = ({
   );
 };
 
-export default Register;
+export default RegisterError;

@@ -1,6 +1,6 @@
-.registerContainer {
+.loginErrorContainer {
     width: 360px;
-    height: 487px;
+    height: 465px;
     gap: 48px;
     border-radius: 30px;
     padding: 40px;
@@ -11,17 +11,20 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1000;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 .logo {
     width: 220px;
     height: 35px;
-    margin-bottom: 48px;
+
 }
 
 .formContainer {
     width: 280px;
-    height: 324px;
+    height: 302px;
     gap: 14px;
     display: flex;
     flex-direction: column;
@@ -45,11 +48,7 @@
     color: #D0CECE;
 }
 
-.inputFieldError {
-    border-color: #FF0000;
-}
-
-.registerButton {
+.loginButton {
     width: 280px;
     height: 52px;
     gap: 10px;
@@ -63,10 +62,10 @@
     line-height: 110%;
     color: #000000;
     cursor: pointer;
-
+    margin-bottom: 10px;
 }
 
-.loginButton {
+.registerButton {
     width: 280px;
     height: 52px;
     gap: 10px;
@@ -83,10 +82,16 @@
 }
 
 .errorMessage {
-    color: #FF0000;
+    width: 280px;
+    height: 30px;
     font-family: 'Roboto', sans-serif;
+    font-weight: 400;
     font-size: 13px;
     line-height: 110%;
-    margin-top: 5px;
     text-align: center;
+    color: #F84D4D;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

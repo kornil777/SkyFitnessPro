@@ -1,113 +1,114 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Login from '../Login/Login';
-import Register from '../Register/Register';
-import styles from './AuthModal.module.css';
+import React, { useState } from "react";
+import Login from "../Login/Login";
+import Register from "../Register/Register";
+import LoginError from "../LoginError/LoginError";
+import RegisterError from "../RegisterError/RegisterError";
+import styles from "./AuthModal.module.css";
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (email: string, password: string) => Promise<boolean>;
-  onRegister: (email: string, password: string, name: string) => Promise<boolean>;
+  onLogin: (email: string, password: string) => boolean;
+  onRegister: (email: string, password: string, name: string) => boolean;
 }
 
-const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin, onRegister }) => {
-  const navigate = useNavigate();
+const AuthModal: React.FC<AuthModalProps> = ({
+  isOpen,
+  onClose,
+  onLogin,
+  onRegister,
+}) => {
   const [isLogin, setIsLogin] = useState(true);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // Если модалка закрыта, ничего не рендерим
   if (!isOpen) return null;
 
-  const handleLoginSubmit = async (email: string, password: string) => {
-    setIsLoading(true);
-    setErrorMessage(null);
-    try {
-      const success = await onLogin(email, password);
-      if (success) {
-        onClose();
-        navigate('/');
-      } else {
-        setErrorMessage('Неверный email или пароль');
-      }
-    } catch {
-      setErrorMessage('Ошибка при входе');
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSwitchToRegister = () => {
+    setIsLogin(false);
+    setShowError(false);
   };
 
-  const handleRegisterSubmit = async (email: string, password: string, name: string) => {
-    setIsLoading(true);
-    setErrorMessage(null);
-    try {
-      const success = await onRegister(email, password, name);
-      if (success) {
-        setShowSuccessMessage(true);
-        setIsLogin(true);
-        setErrorMessage(null);
-        setTimeout(() => setShowSuccessMessage(false), 3000);
-        // Не закрываем модалку, чтобы пользователь мог войти
-      } else {
-        setErrorMessage('Пользователь с таким email уже существует');
-      }
-    } catch {
-      setErrorMessage('Ошибка при регистрации');
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSwitchToLogin = () => {
+    setIsLogin(true);
+    setShowError(false);
   };
 
-  const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
+  const handleLoginSubmit = (email: string, password: string) => {
+    const success = onLogin(email, password);
+    if (success) {
       onClose();
+    } else {
+      setErrorMessage("Пароль введен неверно, попробуйте еще раз.");
+      setShowError(true);
     }
   };
 
-  return (
-    <div className={styles.overlay} onClick={handleOverlayClick}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.closeButton} onClick={onClose}>✕</button>
+  const handleRegisterSubmit = (
+    email: string,
+    password: string,
+    name: string,
+  ) => {
+    const success = onRegister(email, password, name);
+    if (success) {
+      setErrorMessage("Регистрация успешна! Теперь вы можете войти.");
+      setIsLogin(true);
+      setShowError(true);
+    } else {
+      setErrorMessage("Данная почта уже используется. Попробуйте войти.");
+      setShowError(true);
+    }
+  };
 
-        <div className={styles.toggleButtons}>
-          <button
-            className={`${styles.toggleButton} ${isLogin ? styles.activeToggle : ''}`}
-            onClick={() => { setIsLogin(true); setErrorMessage(null); setShowSuccessMessage(false); }}
-          >
-            Вход
-          </button>
-          <button
-            className={`${styles.toggleButton} ${!isLogin ? styles.activeToggle : ''}`}
-            onClick={() => { setIsLogin(false); setErrorMessage(null); setShowSuccessMessage(false); }}
-          >
-            Регистрация
-          </button>
-        </div>
-
-        {showSuccessMessage && (
-          <div className={styles.successMessage}>Регистрация успешна! Теперь вы можете войти.</div>
-        )}
-
-        {isLogin ? (
-          <Login
-            onSwitchToRegister={() => { setIsLogin(false); setErrorMessage(null); }}
-            onClose={onClose}
-            onLogin={handleLoginSubmit}
-            errorMessage={errorMessage}
-            isLoading={isLoading}
-          />
-        ) : (
-          <Register
-            onSwitchToLogin={() => { setIsLogin(true); setErrorMessage(null); }}
-            onClose={onClose}
-            onRegister={handleRegisterSubmit}
-            errorMessage={errorMessage}
-            isLoading={isLoading}
-          />
-        )}
+  // Login with error
+  if (isLogin && showError) {
+    return (
+      <div className={styles.overlay}>
+        <LoginError
+          onSwitchToRegister={handleSwitchToRegister}
+          onClose={onClose}
+          errorMessage={errorMessage}
+          onLogin={handleLoginSubmit}
+        />
       </div>
+    );
+  }
+
+  // Register with error
+  if (!isLogin && showError) {
+    return (
+      <div className={styles.overlay}>
+        <RegisterError
+          onSwitchToLogin={handleSwitchToLogin}
+          onClose={onClose}
+          errorMessage={errorMessage}
+          onRegister={handleRegisterSubmit}
+        />
+      </div>
+    );
+  }
+
+  // Login without error
+  if (isLogin) {
+    return (
+      <div className={styles.overlay}>
+        <Login
+          onSwitchToRegister={handleSwitchToRegister}
+          onClose={onClose}
+          onLogin={handleLoginSubmit}
+        />
+      </div>
+    );
+  }
+
+  // Register without error
+  return (
+    <div className={styles.overlay}>
+      <Register
+        onSwitchToLogin={handleSwitchToLogin}
+        onClose={onClose}
+        onRegister={handleRegisterSubmit}
+      />
     </div>
   );
 };

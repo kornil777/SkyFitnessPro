@@ -41,14 +41,3 @@
     height: 100%;
     transform: translateX(-50%);
 }
-
-@media (max-width: 480px) {
-
-    .iconContainer {
-    
-    top: 23px;
-    right: 38px;
-}
-
-
-}

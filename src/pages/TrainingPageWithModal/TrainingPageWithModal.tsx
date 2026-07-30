@@ -1,173 +1,243 @@
-// src/pages/TrainingPageWithModal/TrainingPageWithModal.tsx
-
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { getWorkoutById, getWorkoutProgress, saveWorkoutProgress } from '../../api/workouts';
-import Header from '../../components/Header/Header';
-import SuccessModal from '../../components/SuccessModal/SuccessModal';
-import { splitWorkoutName } from '../../utils/splitWorkoutName';
-import type { Workout } from '../../types/course.types';
-import styles from './TrainingPageWithModal.module.css';
-import Loader from '../../components/Loader/Loader';
+import React, { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import UserProfile from "../../components/UserProfile/UserProfile";
+import styles from "./TrainingPageWithModal.module.css";
 
 interface TrainingPageWithModalProps {
-  openAuthModal: () => void;
+  userName?: string;
+  userEmail?: string;
+  onLogout?: () => void;
 }
 
-const TrainingPageWithModal: React.FC<TrainingPageWithModalProps> = ({ openAuthModal }) => {
+const TrainingPageWithModal: React.FC<TrainingPageWithModalProps> = ({
+  userName = "Анна",
+  userEmail = "anna@mail.com",
+  onLogout,
+}) => {
   const navigate = useNavigate();
-  const { courseId, workoutId } = useParams<{ courseId: string; workoutId: string }>();
-  const { user, logout } = useAuth();
-  const [workout, setWorkout] = useState<Workout | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [progressValues, setProgressValues] = useState<number[]>([]);
-  const [saving, setSaving] = useState(false);
-  const [showProgressModal, setShowProgressModal] = useState(true);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  
+  const { id } = useParams<{ id: string }>();
+  const [progressItems, setProgressItems] = useState([
+    {
+      id: 1,
+      question: "Сколько раз вы сделали наклоны вперед?",
+      value: 20,
+    },
+    {
+      id: 2,
+      question: "Сколько раз вы сделали наклоны назад?",
+      value: 0,
+    },
+    {
+      id: 3,
+      question: "Сколько раз вы сделали поднятие ног, согнутых в коленях?",
+      value: 0,
+    },
+  ]);
 
-  useEffect(() => {
-    const loadWorkout = async () => {
-      if (!workoutId || !courseId) return;
-      try {
-        const data = await getWorkoutById(workoutId);
-        setWorkout(data);
-        try {
-          const progressData = await getWorkoutProgress(courseId, workoutId);
-          if (progressData && progressData.progressData) {
-            setProgressValues(progressData.progressData);
-          } else {
-            setProgressValues(data.exercises.map(() => 0));
-          }
-        } catch {
-          setProgressValues(data.exercises.map(() => 0));
-        }
-      } catch (error) {
-        console.error('Failed to load workout:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadWorkout();
-  }, [workoutId, courseId]);
-
-  const handleProfileClick = () => navigate('/profile');
-  const handleAddCourse = () => navigate('/');
-  const handleLogout = () => {
-    logout();
-    navigate('/');
+  const handleProfileClick = () => {
+    navigate("/profile");
   };
 
-  const handleInputChange = (index: number, value: string) => {
-    const num = parseInt(value) || 0;
-    const newValues = [...progressValues];
-    newValues[index] = num;
-    setProgressValues(newValues);
+  const handleAddCourse = () => {
+    navigate("/courses");
   };
 
-  const handleSave = async () => {
-    if (!workout || !courseId || !workoutId) return;
-    setSaving(true);
-    try {
-      await saveWorkoutProgress(courseId, workoutId, progressValues);
-      setShowProgressModal(false);
-      setShowSuccessModal(true);
-    } catch (error) {
-      console.error('Failed to save progress:', error);
-    } finally {
-      setSaving(false);
-    }
+  const handleInputChange = (id: number, value: string) => {
+    const numValue = parseInt(value) || 0;
+    setProgressItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, value: numValue } : item,
+      ),
+    );
   };
 
-  const handleCloseProgressModal = () => {
-    navigate(`/training/${courseId}/${workoutId}`);
+  const handleSave = () => {
+    console.log("Saved progress:", progressItems);
+    navigate(`/training/${id}/success`);
+  };
+
+  const handleCloseModal = () => {
+    navigate(`/training/${id}`);
   };
 
   const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) handleCloseProgressModal();
+    if (e.target === e.currentTarget) {
+      handleCloseModal();
+    }
   };
-
-  const handleSuccessModalClose = () => {
-    setShowSuccessModal(false);
-    navigate(`/training/${courseId}/${workoutId}`);
-  };
-
-  if (loading) return <Loader fullPage />;
-  if (!workout) return <div>Тренировка не найдена</div>;
-
-  const { title, subtitle } = splitWorkoutName(workout.name);
 
   return (
     <div className={styles.page}>
-       <Header openAuthModal={openAuthModal} />
-      
-      <main className={styles.content}>
-        <div className={styles.titleBlock}>
-          <h1 className={styles.title}>{title}</h1>
-          {subtitle && <span className={styles.titleSub}>{subtitle}</span>}
-        </div>
+      {/* Затемнение всей страницы */}
+      <div className={styles.pageOverlay} onClick={handleOverlayClick} />
 
+      {/* Логотип (поверх затемнения) */}
+      <img
+        src="/images/logo.svg"
+        alt="SkyFitnessPro"
+        className={styles.logo}
+      />
+
+      {/* Профиль пользователя (поверх затемнения) */}
+      <div className={styles.userProfileWrapper}>
+        <UserProfile
+          userName={userName}
+          userEmail={userEmail}
+          onProfileClick={handleProfileClick}
+          onLogout={onLogout}
+          onAddCourse={handleAddCourse}
+        />
+      </div>
+
+      {/* Основной контент (поверх затемнения) */}
+      <div className={styles.contentBlock}>
+        <h1 className={styles.title}>Йога</h1>
+
+        {/* Видео */}
         <div className={styles.videoContainer}>
-          <iframe
-            width="1160"
-            height="639"
-            src={workout.video}
-            title={workout.name}
-            frameBorder="0"
-            allowFullScreen
-            className={styles.videoIframe}
+          <img
+            src="/images/vid1.svg"
+            alt="Video"
+            className={styles.videoImage}
           />
         </div>
 
+        {/* Блок с упражнениями */}
         <div className={styles.exercisesBlock}>
           <div className={styles.exercisesContent}>
-            <h2 className={styles.exercisesTitle}>Упражнения тренировки</h2>
+            <h2 className={styles.exercisesTitle}>Упражнения тренировки 2</h2>
+
             <div className={styles.exercisesGrid}>
-              {workout.exercises.map((exercise, index) => (
-                <div key={exercise._id} className={styles.exerciseItem}>
-                  <p className={styles.exerciseText}>{exercise.name}</p>
+              {/* Первая колонка */}
+              <div className={styles.exerciseColumn}>
+                <div className={styles.exerciseItem}>
+                  <p className={styles.exerciseText}>Наклоны вперед 0%</p>
+                  <div className={styles.progressBarBg}>
+                    <div
+                      className={styles.progressBarFill}
+                      style={{ width: "0%" }}
+                    />
+                  </div>
                 </div>
-              ))}
+                <div className={styles.exerciseItem}>
+                  <p className={styles.exerciseText}>Наклоны назад 0%</p>
+                  <div className={styles.progressBarBg}>
+                    <div
+                      className={styles.progressBarFill}
+                      style={{ width: "0%" }}
+                    />
+                  </div>
+                </div>
+                <div className={styles.exerciseItem}>
+                  <p className={styles.exerciseText}>
+                    Поднятие ног, согнутых в коленях 0%
+                  </p>
+                  <div className={styles.progressBarBg}>
+                    <div
+                      className={styles.progressBarFill}
+                      style={{ width: "0%" }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Вторая колонка */}
+              <div className={styles.exerciseColumn}>
+                <div className={styles.exerciseItem}>
+                  <p className={styles.exerciseText}>Наклоны вперед 0%</p>
+                  <div className={styles.progressBarBg}>
+                    <div
+                      className={styles.progressBarFill}
+                      style={{ width: "0%" }}
+                    />
+                  </div>
+                </div>
+                <div className={styles.exerciseItem}>
+                  <p className={styles.exerciseText}>Наклоны назад 0%</p>
+                  <div className={styles.progressBarBg}>
+                    <div
+                      className={styles.progressBarFill}
+                      style={{ width: "0%" }}
+                    />
+                  </div>
+                </div>
+                <div className={styles.exerciseItem}>
+                  <p className={styles.exerciseText}>
+                    Поднятие ног, согнутых в коленях 0%
+                  </p>
+                  <div className={styles.progressBarBg}>
+                    <div
+                      className={styles.progressBarFill}
+                      style={{ width: "0%" }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Третья колонка */}
+              <div className={styles.exerciseColumn}>
+                <div className={styles.exerciseItem}>
+                  <p className={styles.exerciseText}>Наклоны вперед 0%</p>
+                  <div className={styles.progressBarBg}>
+                    <div
+                      className={styles.progressBarFill}
+                      style={{ width: "0%" }}
+                    />
+                  </div>
+                </div>
+                <div className={styles.exerciseItem}>
+                  <p className={styles.exerciseText}>Наклоны назад 0%</p>
+                  <div className={styles.progressBarBg}>
+                    <div
+                      className={styles.progressBarFill}
+                      style={{ width: "0%" }}
+                    />
+                  </div>
+                </div>
+                <div className={styles.exerciseItem}>
+                  <p className={styles.exerciseText}>
+                    Поднятие ног, согнутых в коленях 0%
+                  </p>
+                  <div className={styles.progressBarBg}>
+                    <div
+                      className={styles.progressBarFill}
+                      style={{ width: "0%" }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-            <button className={styles.progressButton} onClick={() => setShowProgressModal(true)}>
+
+            <button className={styles.progressButton} onClick={() => {}}>
               Заполнить свой прогресс
             </button>
           </div>
         </div>
-      </main>
+      </div>
 
-      {/* Модалка ввода прогресса */}
-      {showProgressModal && (
-        <div className={styles.overlay} onClick={handleOverlayClick}>
-          <div className={styles.modalContainer} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.closeButton} onClick={handleCloseProgressModal}>
-              ✕
-            </button>
-            <h2 className={styles.modalTitle}>Мой прогресс</h2>
-            <div className={styles.scrollableContent}>
-              {workout.exercises.map((exercise, index) => (
-                <div key={exercise._id} className={styles.progressItem}>
-                  <p className={styles.questionText}>{exercise.name}</p>
-                  <input
-                    type="number"
-                    className={styles.inputField}
-                    value={progressValues[index] || 0}
-                    onChange={(e) => handleInputChange(index, e.target.value)}
-                    min="0"
-                  />
-                </div>
-              ))}
+      {/* Модальное окно */}
+      <div className={styles.modalContainer}>
+        <h2 className={styles.modalTitle}>Мой прогресс</h2>
+
+        <div className={styles.scrollableContent}>
+          {progressItems.map((item) => (
+            <div key={item.id} className={styles.progressItem}>
+              <p className={styles.questionText}>{item.question}</p>
+              <input
+                type="number"
+                className={styles.inputField}
+                value={item.value}
+                onChange={(e) => handleInputChange(item.id, e.target.value)}
+                min="0"
+              />
             </div>
-            <button className={styles.saveButton} onClick={handleSave} disabled={saving}>
-              {saving ? 'Сохранение...' : 'Сохранить'}
-            </button>
-          </div>
+          ))}
         </div>
-      )}
 
-      {/* Модалка успеха */}
-      <SuccessModal isOpen={showSuccessModal} onClose={handleSuccessModalClose} />
+        <button className={styles.saveButton} onClick={handleSave}>
+          Сохранить
+        </button>
+      </div>
     </div>
   );
 };
