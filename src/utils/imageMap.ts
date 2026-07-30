@@ -29,7 +29,7 @@ export const courseBannerSport: Record<string, string> = {
 
 
 export const getCourseImage = (nameRU: string): string => {
-  return `/images/${courseImageMap[nameRU] || 'card1.svg'}`;
+  return `images/${courseImageMap[nameRU] || 'card1.svg'}`;
 };
 
 
@@ -39,5 +39,5 @@ export const getBannerColor = (nameRU: string): string => {
 
 
 export const getBannerSport = (nameRU: string): string => {
-  return `/images/banners/${courseBannerSport[nameRU] || 'default-sport.png'}`;
+  return `images/banners/${courseBannerSport[nameRU] || 'default-sport.png'}`;
 };

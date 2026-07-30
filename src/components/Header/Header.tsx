@@ -25,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({ openAuthModal }) => {
     <header className={styles.header}>
       <Link to="/" className={styles.logoLink}>
         <img
-          src="/images/logo.svg"
+          src="images/logo.svg"
           alt="SkyFitnessPro"
           className={styles.logo}
         />

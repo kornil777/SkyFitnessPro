@@ -134,7 +134,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
         <div className={styles.profileCard}>
           <div className={styles.profileInner}>
             <div className={styles.profileIcon}>
-              <img src="/images/Mask.svg" alt="Profile" />
+              <img src="images/Mask.svg" alt="Profile" />
             </div>
             <div className={styles.profileInfo}>
               <h2 className={styles.profileName}>{user?.name || ''}</h2>
@@ -175,10 +175,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
                   <div className={styles.courseContent}>
                     <h3 className={styles.courseTitle}>{course.nameRU}</h3>
                     <div className={styles.iconsRow}>
-                      <img src="/images/25day.svg" alt="25 дней" className={styles.daysIcon} />
-                      <img src="/images/20min.svg" alt="20-50 мин/день" className={styles.timeIcon} />
+                      <img src="images/25day.svg" alt="25 дней" className={styles.daysIcon} />
+                      <img src="images/20min.svg" alt="20-50 мин/день" className={styles.timeIcon} />
                     </div>
-                    <img src="/images/mult.svg" alt="Сложность" className={styles.difficultyIcon} />
+                    <img src="images/mult.svg" alt="Сложность" className={styles.difficultyIcon} />
                     <div className={styles.progressSection}>
                       <p className={styles.progressText}>Прогресс {course.progress || 0}%</p>
                       <div className={styles.progressBarBg}>

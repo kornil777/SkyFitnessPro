@@ -127,8 +127,8 @@ const CoursePage: React.FC<CoursePageProps> = ({ openAuthModal }) => {
         </div>
 
         <div className={styles.decorImages}>
-          <img src="/images/block4.svg" alt="Decorative 1" className={styles.block4} />
-          <img src="/images/block5.svg" alt="Decorative 2" className={styles.block5} />
+          <img src="images/block4.svg" alt="Decorative 1" className={styles.block4} />
+          <img src="images/block5.svg" alt="Decorative 2" className={styles.block5} />
         </div>
 
         <div className={styles.offerWrapper}>

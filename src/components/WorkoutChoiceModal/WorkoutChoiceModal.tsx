@@ -101,7 +101,7 @@ const WorkoutChoiceModal: React.FC<WorkoutChoiceModalProps> = ({ courseId, onClo
                   <div className={styles.circle}>
                     {isSelected && (
                       <img
-                        src="/images/check.svg"
+                        src="images/check.svg"
                         alt="✓"
                         className={styles.checkIcon}
                       />

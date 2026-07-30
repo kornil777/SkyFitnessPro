@@ -49,7 +49,7 @@ const CoursesPage: React.FC<CoursesPageProps> = ({ openAuthModal }) => {
           <br />и улучшите качество жизни
         </h1>
         <img
-          src="/images/Group.svg"
+          src="images/Group.svg"
           alt="Измени своё тело за полгода"
           className={styles.greenBlock}
         />
