@@ -1,0 +1,199 @@
+/* src/components/WorkoutChoiceModal/WorkoutChoiceModal.module.css */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.container {
+  position: relative;
+  width: 460px;
+  max-height: 90vh; /* чтобы не выходила за экран */
+  background: #FFFFFF;
+  border-radius: 30px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  box-shadow: 0px 4px 67px -12px rgba(0, 0, 0, 0.13);
+  box-sizing: border-box;
+  overflow-y: auto;
+  margin: auto; /* гарантирует центрирование в flex */
+}
+
+/* Остальные стили без изменений */
+.closeButton {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #000;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  z-index: 10;
+}
+
+.title {
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 110%;
+  color: #000;
+  margin: 0;
+}
+
+.list {
+  flex: 1;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  width: 100%;
+  height: 54px;
+  background: transparent;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.iconWrapper {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #d0cece;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, background 0.2s;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.selected .circle {
+  border-color: #bcec30;
+  background: #bcec30;
+}
+
+.checkIcon {
+  width: 14px;
+  height: 14px;
+  display: block;
+  object-fit: contain;
+}
+
+.textBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.titleText {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 110%;
+  color: #000;
+}
+
+.subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 110%;
+  color: #000;
+  opacity: 0.6;
+}
+
+.startButton {
+  width: 100%;
+  max-width: 380px;
+  height: 52px;
+  background: #bcec30;
+  border-radius: 46px;
+  border: none;
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 110%;
+  color: #000;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  align-self: center;
+}
+
+.startButton:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+.startButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.loading,
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 24px;
+  font-family: "Roboto", sans-serif;
+}
+
+/* Адаптив для мобильных */
+@media (max-width: 480px) {
+  .container {
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
+    padding: 24px;
+    gap: 24px;
+  }
+  .title {
+    font-size: 24px;
+  }
+  .item {
+    height: auto;
+    gap: 8px;
+  }
+  .titleText {
+    font-size: 20px;
+  }
+  .subtitle {
+    font-size: 14px;
+  }
+  .startButton {
+    height: 44px;
+    font-size: 16px;
+  }
+}

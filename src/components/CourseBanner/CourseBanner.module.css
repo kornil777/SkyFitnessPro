@@ -1,0 +1,44 @@
+.banner {
+  position: relative;
+  width: 100%;
+  height: 310px;
+  border-radius: 30px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  padding: 30px 40px;
+  box-sizing: border-box;
+}
+
+.sportImage {
+  position: absolute;
+  bottom: 0;
+  right: 40px; /* спортсмен справа внизу */
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.title {
+  position: absolute;
+  top: 30px;
+  left: 40px; /* текст в левом верхнем углу */
+  z-index: 1;
+  font-size: 48px;
+  font-weight: 500;
+  color: #ffffff;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  margin: 0;
+  line-height: 1.1;
+  text-align: left;
+}
+
+@media (max-width: 480px) {
+    .title {
+        display: none;
+    }
+    .sportImage{
+        width: 749px;
+        height: 557px;
+        top: -57px;
+        
+    }
+}

@@ -50,20 +50,26 @@
 }
 
 .registerButton {
-    width: 280px;
-    height: 52px;
-    gap: 10px;
-    border-radius: 46px;
-    padding: 16px 26px;
-    background: #BCEC30;
-    border: none;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 110%;
-    color: #000000;
-    cursor: pointer;
+  width: 280px;
+  height: 52px;
+  background: #BCEC30;
+  border-radius: 46px;
+  border: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  color: #000000;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+}
 
+.registerButton:hover {
+  opacity: 0.9;
+}
+
+.registerButton:active {
+  background: #E9ECED;
+  color: #000000;
 }
 
 .loginButton {
@@ -89,4 +95,44 @@
     line-height: 110%;
     margin-top: 5px;
     text-align: center;
+}
+
+.errorText {
+  color: #FF0000;
+  font-size: 12px;
+  margin-top: -8px;
+  margin-bottom: -9px;
+  display: block;
+}
+
+.errorMessage {
+  color: #FF0000;
+  font-size: 16px;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.switchToLoginButton {
+  width: 280px;
+  height: 52px;
+  border-radius: 46px;
+  border: 1px solid #000000;
+  background: transparent;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  color: #000000;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.switchToLoginButton:hover {
+  background: #BCEC30;
+  color: #000000;
+}
+
+@media (max-width: 480px) {
+    .formContainer{
+        gap: 10px;
+    }
 }

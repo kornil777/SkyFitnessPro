@@ -43,7 +43,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
 
         <div className={styles.buttonsContainer}>
           <button className={styles.profileButton} onClick={onProfileClick}>
-            Мой профиль
+            Профиль
           </button>
           <button className={styles.logoutButton} onClick={handleLogoutClick}>
             Выйти

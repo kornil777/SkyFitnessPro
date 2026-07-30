@@ -1,73 +1,94 @@
-import React, { useState } from "react";
-import styles from "./Register.module.css";
+// src/components/Register/Register.tsx
+
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { registerSchema } from '../../validation/auth.schema';
+import type { RegisterFormData } from '../../validation/auth.schema';
+import styles from './Register.module.css';
 
 interface RegisterProps {
   onSwitchToLogin: () => void;
   onClose: () => void;
   onRegister: (email: string, password: string, name: string) => void;
+  errorMessage?: string | null;
+  isLoading?: boolean;
 }
 
 const Register: React.FC<RegisterProps> = ({
   onSwitchToLogin,
   onClose,
   onRegister,
+  errorMessage,
+  isLoading = false,
 }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+  });
 
-  const handleRegister = () => {
-    if (password === confirmPassword && email && name) {
-      onRegister(email, password, name);
-    }
+  const onSubmit = (data: RegisterFormData) => {
+    onRegister(data.email, data.password, data.name);
   };
 
   return (
     <div className={styles.registerContainer}>
-      <img
-        src={`${process.env.PUBLIC_URL}/images/logo.svg`}
-        alt="SkyFitnessPro"
-        className={styles.logo}
-      />
+      <img src="/images/logo.svg" alt="SkyFitnessPro" className={styles.logo} />
 
-      <div className={styles.formContainer}>
+      <form className={styles.formContainer} onSubmit={handleSubmit(onSubmit)}>
         <input
           type="text"
           placeholder="Имя"
           className={styles.inputField}
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          {...register('name')}
         />
+        {errors.name && (
+          <span className={styles.errorText}>{errors.name.message}</span>
+        )}
 
         <input
           type="email"
           placeholder="Эл.почта"
           className={styles.inputField}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          {...register('email')}
         />
+        {errors.email && (
+          <span className={styles.errorText}>{errors.email.message}</span>
+        )}
 
         <input
           type="password"
           placeholder="Пароль"
           className={styles.inputField}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          {...register('password')}
         />
+        {errors.password && (
+          <span className={styles.errorText}>{errors.password.message}</span>
+        )}
 
-        <input
-          type="password"
-          placeholder="Повторить пароль"
-          className={styles.inputField}
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
+        {errorMessage && (
+          <div className={styles.errorMessage}>{errorMessage}</div>
+        )}
 
-        <button className={styles.registerButton} onClick={handleRegister}>
-          Зарегистрироваться
+        <button
+          type="submit"
+          className={styles.registerButton}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Регистрация...' : 'Зарегистрироваться'}
         </button>
-      </div>
+
+        <button
+          type="button"
+          className={styles.switchToLoginButton}
+          onClick={onSwitchToLogin}
+        >
+          Войти
+        </button>
+      </form>
     </div>
   );
 };

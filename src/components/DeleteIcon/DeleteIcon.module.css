@@ -60,3 +60,11 @@
     background: #000000;
     transform: translateY(-50%);
 }
+
+@media (max-width: 480px) {
+.iconContainer {
+   
+    top: 23px;
+    right: 38px;
+}
+}
