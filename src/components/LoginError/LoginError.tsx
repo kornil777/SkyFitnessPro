@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import styles from "./Login.module.css";
+import styles from "./LoginError.module.css";
 
-interface LoginProps {
+interface LoginErrorProps {
   onSwitchToRegister: () => void;
   onClose: () => void;
+  errorMessage: string;
   onLogin: (email: string, password: string) => void;
 }
 
-const Login: React.FC<LoginProps> = ({
+const LoginError: React.FC<LoginErrorProps> = ({
   onSwitchToRegister,
   onClose,
+  errorMessage,
   onLogin,
 }) => {
   const [email, setEmail] = useState("");
@@ -22,7 +24,7 @@ const Login: React.FC<LoginProps> = ({
   };
 
   return (
-    <div className={styles.loginContainer}>
+    <div className={styles.loginErrorContainer}>
       <img
         src={`${process.env.PUBLIC_URL}/images/logo.svg`}
         alt="SkyFitnessPro"
@@ -46,6 +48,8 @@ const Login: React.FC<LoginProps> = ({
           onChange={(e) => setPassword(e.target.value)}
         />
 
+        <div className={styles.errorMessage}>{errorMessage}</div>
+
         <button className={styles.loginButton} onClick={handleLogin}>
           Войти
         </button>
@@ -58,4 +62,4 @@ const Login: React.FC<LoginProps> = ({
   );
 };
 
-export default Login;
+export default LoginError;

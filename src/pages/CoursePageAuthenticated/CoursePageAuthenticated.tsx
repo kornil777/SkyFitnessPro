@@ -1,19 +1,38 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import styles from "./CoursePage.module.css";
+import UserProfile from "../../components/UserProfile/UserProfile";
+import styles from "./CoursePageAuthenticated.module.css";
 
-interface CoursePageProps {
-  onLoginClick?: () => void;
+interface CoursePageAuthenticatedProps {
+  userName?: string;
+  userEmail?: string;
+  onProfileClick?: () => void;
+  onLogout?: () => void;
+  onAddCourse?: () => void;
 }
 
-const CoursePage: React.FC<CoursePageProps> = ({ onLoginClick }) => {
+const CoursePageAuthenticated: React.FC<CoursePageAuthenticatedProps> = ({
+  userName = "Anna",
+  userEmail = "anna@mail.com",
+  onProfileClick,
+  onLogout,
+  onAddCourse,
+}) => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const handleLoginClick = () => {
-    if (onLoginClick) {
-      onLoginClick();
-    }
+  const handleProfileClick = () => {
+    navigate("/profile");
+  };
+
+  const handleLogout = () => {
+    if (onLogout) onLogout();
+    navigate("/");
+  };
+
+  const handleAddCourse = () => {
+    // Переход на страницу профиля (мои курсы)
+    navigate("/profile");
   };
 
   return (
@@ -25,10 +44,16 @@ const CoursePage: React.FC<CoursePageProps> = ({ onLoginClick }) => {
         className={styles.logo}
       />
 
-      {/* Кнопка входа */}
-      <button className={styles.loginButton} onClick={handleLoginClick}>
-        Войти
-      </button>
+      {/* Профиль пользователя - ВАЖНО! Этот блок был потерян */}
+      <div className={styles.userProfileWrapper}>
+        <UserProfile
+          userName={userName}
+          userEmail={userEmail}
+          onProfileClick={handleProfileClick}
+          onLogout={handleLogout}
+          onAddCourse={handleAddCourse}
+        />
+      </div>
 
       {/* Текст под логотипом */}
       <p className={styles.subtitle}>Онлайн-тренировки для занятий дома</p>
@@ -97,8 +122,8 @@ const CoursePage: React.FC<CoursePageProps> = ({ onLoginClick }) => {
             <br />
             помогают противостоять стрессам
           </p>
-          <button className={styles.offerButton} onClick={handleLoginClick}>
-            Войдите, чтобы добавить курс
+          <button className={styles.offerButton} onClick={handleAddCourse}>
+            Добавить курс
           </button>
         </div>
 
@@ -118,4 +143,4 @@ const CoursePage: React.FC<CoursePageProps> = ({ onLoginClick }) => {
   );
 };
 
-export default CoursePage;
+export default CoursePageAuthenticated;

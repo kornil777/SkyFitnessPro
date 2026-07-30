@@ -1,50 +1,35 @@
 // src/types/course.types.ts
 
-export interface Exercise {
-  _id: string;
-  name: string;
-  quantity: number;
-}
-
-export interface Workout {
-  _id: string;
-  name: string;
-  video: string; // ссылка на YouTube (embed)
-  exercises: Exercise[];
-}
-
 export interface Course {
-  _id: string;
-  nameRU: string;
-  nameEN: string;
-  description: string;
-  directions: string[];
-  fitting: string[];
-  difficulty: string;
-  durationInDays: number;
-  dailyDurationInMinutes: {
-    from: number;
-    to: number;
-  };
-  workouts: string[]; 
-  image?: string;
-  order?: number; 
+  id: number;
+  title: string;
+  image: string;
+  duration?: string;
+  timePerDay?: string;
+  difficulty?: string;
+  description?: string;
+  lessons?: Lesson[];
+  progress?: number;
 }
 
-// Ответ на GET /api/fitness/users/me/progress?courseId=...
-export interface ProgressResponse {
-  courseId: string;
-  courseCompleted: boolean;
-  workoutsProgress: {
-    workoutId: string;
-    workoutCompleted: boolean;
-    progressData: number[]; // массив чисел (повторения для каждого упражнения)
-  }[];
+export interface Lesson {
+  id: number;
+  title: string;
+  videoUrl: string;
+  tasks?: string[];
 }
 
-// Ответ на GET /api/fitness/users/me/progress?courseId=...&workoutId=...
-export interface WorkoutProgressResponse {
-  workoutId: string;
-  workoutCompleted: boolean;
-  progressData: number[];
+export interface User {
+  id?: string;
+  email: string;
+  name: string;
+  password?: string;
+}
+
+export interface Progress {
+  userId: string;
+  courseId: number;
+  lessonId: number;
+  completed: boolean;
+  value?: number;
 }

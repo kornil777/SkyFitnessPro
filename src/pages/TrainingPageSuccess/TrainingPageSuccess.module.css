@@ -72,7 +72,7 @@
 
 .exercisesBlock {
     width: 1160px;
-    height: 375px;
+    height: 395px;
     border-radius: 30px;
     padding: 40px;
     background: #FFFFFF;
@@ -82,10 +82,11 @@
 
 .exercisesContent {
     width: 1080px;
-    height: 295px;
+    height: 223px;
+    /* Увеличено для правильного размещения */
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 20px;
 }
 
 .exercisesTitle {
@@ -101,22 +102,41 @@
 
 .exercisesGrid {
     width: 1080px;
-    height: 148px;
     display: flex;
     gap: 60px;
 }
 
 .exerciseColumn {
     width: 320px;
-    height: 148px;
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
+/* Обычные колонки (первые две) */
+.exerciseColumnDefault {
+    height: 148px;
+}
+
+/* Колонка с многострочным текстом (третья) */
+.exerciseColumnLarge {
+    height: 168px;
+    /* Увеличено для двух строк текста */
+}
+
+/* Обычные элементы (две верхние строки) */
 .exerciseItem {
     width: 320px;
     height: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Специальный элемент для третьей строки */
+.exerciseItemLarge {
+    width: 320px;
+    height: 56px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -131,6 +151,26 @@
     line-height: 110%;
     color: #000000;
     margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Текст для многострочного упражнения */
+.exerciseTextLarge {
+    width: 320px;
+    height: 40px;
+    /* Текст занимает 40px (две строки по 20px) */
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 20px;
+    /* Высота строки 20px для двух строк */
+    color: #000000;
+    margin: 0;
+    white-space: normal;
+    word-wrap: break-word;
+    display: flex;
+    align-items: center;
 }
 
 .progressBarBg {
@@ -144,7 +184,7 @@
 .progressBarFill {
     height: 6px;
     border-radius: 50px;
-    background: #BCEC30;
+    background: #00C1FF;
     position: absolute;
     top: 0;
     left: 0;
@@ -164,21 +204,20 @@
     color: #000000;
     cursor: pointer;
     box-sizing: border-box;
-
+    margin-top: 16px;
 }
 
 .progressButton:hover {
     opacity: 0.9;
 }
 
-/* Модальное окно */
-.modalContainer {
+/* Модальное окно успеха */
+.successModal {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 645px;
+    left: 507px;
     width: 426px;
-    height: 595.5px;
+    height: 270px;
     border-radius: 30px;
     padding: 40px;
     background: #FFFFFF;
@@ -186,106 +225,42 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 48px;
+    align-items: center;
+    gap: 34px;
     z-index: 2000;
 }
 
-.modalTitle {
+.successTitle {
     width: 346px;
-    height: 35px;
-    font-family: 'StratosSkyeng', sans-serif;
-    font-weight: 400;
-    font-size: 32px;
-    line-height: 110%;
-    color: #000000;
-    margin: 0;
-}
-
-.scrollableContent {
-    width: 346px;
-    height: 432.5px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 34px;
-    padding-right: 10px;
-    box-sizing: border-box;
-    scrollbar-width: thin;
-    scrollbar-color: #000000 transparent;
-}
-
-.scrollableContent::-webkit-scrollbar {
-    width: 6px;
-}
-
-.scrollableContent::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: 10px;
-}
-
-.scrollableContent::-webkit-scrollbar-thumb {
-    background: #000000;
-    border-radius: 10px;
-    min-height: 80px;
-}
-
-.progressItem {
-    width: 320px;
-    height: 102px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.questionText {
-    width: 320px;
-    height: 40px;
+    height: 88px;
     font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-    font-size: 18px;
+    font-weight: 600;
+    font-size: 40px;
     line-height: 110%;
+    text-align: center;
     color: #000000;
     margin: 0;
+}
+
+.iconContainer {
+    width: 68px;
+    height: 68px;
+    position: relative;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
-.inputField {
-    width: 320px;
-    height: 52px;
-    border-radius: 8px;
-    border: 1px solid #D0CECE;
-    padding: 16px 18px;
-    font-family: 'Roboto', sans-serif;
-    font-size: 18px;
-    line-height: 110%;
-    color: #000000;
-    box-sizing: border-box;
+.successIcon {
+    width: 56.67px;
+    height: 56.67px;
+    position: absolute;
+    top: 5.67px;
+    left: 5.67px;
 }
 
-.inputField:focus {
-    outline: none;
-    border-color: #BCEC30;
-}
-
-.saveButton {
-    width: 346px;
-    height: 52px;
-    border-radius: 46px;
-    padding: 16px 26px;
-    background: #BCEC30;
-    border: none;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 110%;
-    color: #000000;
-    cursor: pointer;
-    box-sizing: border-box;
-    transition: opacity 0.2s ease;
-    margin-top: auto;
-}
-
-.saveButton:hover {
-    opacity: 0.9;
+.successIcon img {
+    width: 56.67px;
+    height: 56.67px;
+    object-fit: contain;
 }

@@ -1,168 +1,75 @@
-# SkyFitnessPro
+# React + TypeScript + Vite
 
-Фитнес-приложение для онлайн-тренировок.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Описание
+Currently, two official plugins are available:
 
-SkyFitnessPro — это современное веб-приложение для занятий фитнесом. Пользователи могут просматривать курсы, проходить тренировки с видеоуроками, отслеживать свой прогресс и управлять подписками.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-Проект разработан в рамках дипломной работы по специальности "Веб-разработчик".
+## React Compiler
 
-## Технологии
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-- **React 18** — библиотека для построения интерфейсов
-- **TypeScript** — типизация
-- **Vite** — сборка проекта
-- **React Router v6** — маршрутизация
-- **React Hook Form + Zod** — валидация форм
-- **CSS Modules** — стилизация компонентов
-- **Vitest + React Testing Library** — тестирование
-- **Cloudflare Pages** — деплой
+## Expanding the ESLint configuration
 
-## Функциональность
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-### Общее
-- Авторизация и регистрация (модальное окно)
-- Адаптив под мобильные устройства (375px)
-- Кнопка "Наверх" на главной
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-### Главная страница
-- Список всех курсов (сортировка по порядку)
-- Клик по курсу → переход на страницу курса
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-### Страница курса
-- Баннер с уникальным фоном, изображением и названием
-- Блок "Подойдет для вас, если:" с чёрными карточками и нумерацией
-- Блок "Направления" с иконками
-- Описание курса
-- Блок с предложением "Начните путь к новому телу"
-- Кнопка "Добавить курс" (для авторизованных) или "Войдите, чтобы добавить курс" (для неавторизованных)
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 
-### Профиль
-- Личные данные пользователя (аватар, имя, логин)
-- Список купленных курсов с прогрессом
-- Прогресс курса вычисляется из прогресса упражнений (среднее арифметическое)
-- Кнопка "Начать тренировки" или "Продолжить"
-- Удаление курса из профиля (иконка корзины)
+```
 
-### Тренировки
-- Выбор тренировки через модальное окно (сортировка по номеру урока)
-- Видеоурок (встроенный YouTube)
-- Список упражнений с полосами прогресса
-- Заполнение прогресса через модалку
-- Сохранение прогресса → модалка успеха
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-## Установка и запуск
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-```bash
-# Клонирование репозитория
-git clone https://github.com/kornil777/SkyFitnessPro.git
-cd skyfitnesspro
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 
-# Установка зависимостей
-npm install
-
-# Запуск в режиме разработки
-npm run dev
-
-# Сборка для продакшена
-npm run build
-
-# Запуск тестов
-npm test
-
-
-
-
-#API
-
-Приложение использует REST API с базовым URL https://wedev-api.sky.pro.
-
-Основные эндпоинты:
-
-POST /api/fitness/auth/register — регистрация
-
-POST /api/fitness/auth/login — вход
-
-GET /api/fitness/users/me — данные пользователя
-
-GET /api/fitness/courses — все курсы
-
-GET /api/fitness/courses/:id — курс по ID
-
-GET /api/fitness/courses/:id/workouts — тренировки курса
-
-GET /api/fitness/workouts/:id — тренировка
-
-GET /api/fitness/users/me/progress?courseId=... — прогресс курса
-
-PATCH /api/fitness/courses/:courseId/workouts/:workoutId — сохранение прогресса
-
-
-
-#Структура проекта
-text
-src/
-├── api/                     # API-клиент и эндпоинты
-│   ├── apiClient.ts
-│   ├── courses.ts
-│   ├── progress.ts
-│   ├── purchases.ts
-│   └── workouts.ts
-├── components/              # Переиспользуемые компоненты
-│   ├── AuthModal/           # Модалка авторизации
-│   ├── CourseBanner/        # Баннер курса
-│   ├── CourseCard/          # Карточка курса
-│   ├── DeleteIcon/          # Иконка удаления
-│   ├── Header/              # Шапка сайта
-│   ├── Loader/              # Лоадер
-│   ├── Login/               # Форма входа
-│   ├── PrivateRoute/        # Защита маршрутов
-│   ├── Register/            # Форма регистрации
-│   ├── ScrollToTop/         # Кнопка "Наверх"
-│   ├── SuccessModal/        # Модалка успеха
-│   ├── UserProfile/         # Профиль в шапке
-│   └── WorkoutChoiceModal/  # Модалка выбора тренировки
-├── context/                 # Контексты
-│   └── AuthContext.tsx
-├── pages/                   # Страницы
-│   ├── CoursePage/          # Страница курса
-│   ├── CoursesPage/         # Главная страница
-│   ├── ProfilePage/         # Профиль пользователя
-│   ├── TrainingPage/        # Страница тренировки
-│   └── TrainingPageWithModal/ # Тренировка с модалкой прогресса
-├── types/                   # TypeScript-типы
-│   ├── course.types.ts
-│   └── user.types.ts
-├── utils/                   # Утилиты
-│   ├── imageMap.ts
-│   └── splitWorkoutName.ts
-├── validation/              # Схемы валидации
-│   └── auth.schema.ts
-├── App.tsx
-├── main.tsx
-└── index.css
-
-#Тестирование
-Для тестирования используется Vitest + React Testing Library.
-
-#Запуск тестов:
-
-bash
-npm test
-
-#Пример теста для компонента CourseCard:
-
-tsx
-test('отображает название курса', () => {
-  render(<CourseCard course={mockCourse} />);
-  expect(screen.getByText('Йога')).toBeInTheDocument();
-});
-Деплой
-Проект развёрнут на Cloudflare Pages.
-
-
-
-#Автор
-Студент Корнилов Александр
-
+```
