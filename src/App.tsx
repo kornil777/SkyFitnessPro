@@ -1,7 +1,7 @@
 // src/App.tsx
 
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import AuthModal from './components/AuthModal/AuthModal';
@@ -19,7 +19,7 @@ function App() {
   const closeAuthModal = () => setIsAuthModalOpen(false);
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route
           path="/"
@@ -62,7 +62,7 @@ function App() {
         onLogin={login}
         onRegister={register}
       />
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
