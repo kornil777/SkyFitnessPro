@@ -1,9 +1,14 @@
 .userProfile {
-    width: 168.35px;
-    height: 50px;
     display: flex;
-    align-items: center;
-    cursor: pointer;
+  align-items: center;
+  cursor: pointer;
+  height: 50px;
+  gap: 8px;
+}
+
+.userProfileWrapper {
+  position: relative; /* точка отсчёта для dropdown */
+  display: inline-block;
 }
 
 .profileIconContainer {
@@ -13,71 +18,73 @@
 }
 
 .profileIcon {
-    width: 41.67px;
-    height: 41.67px;
-
-    top: 4.17px;
-    left: 4.17px;
+  width: 41.67px;
+  height: 41.67px;
 }
 
 .profileIcon img {
-    width: 41.67px;
-    height: 41.67px;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .profileData {
-    
-    height: 26px;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-    font-size: 24px;
-    line-height: 110%;
-    text-align: right;
-    color: #000000;
-    white-space: nowrap;
-    margin-left: 8px;
-    display: inline-block;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 110%;
+  color: #000000;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .arrowIcon {
-    width: 8.03px;
-    height: 8.03px;
-    transform: rotate(-45deg);
-    border-width: 2px;
-    border-style: solid;
-    border-color: #000000;
-    border-top: none;
-    border-right: none;
-    margin-left: 12px;
+  width: 8.03px;
+  height: 8.03px;
+  transform: rotate(-45deg);
+  border-width: 2px;
+  border-style: solid;
+  border-color: #000000;
+  border-top: none;
+  border-right: none;
+  margin-left: 12px;
 }
+
+/* Выпадающий блок */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 24px); /* 24px ниже от элемента */
+  right: 0; /* привязываем к правому краю, можно поменять на left: 0, если надо */
+  z-index: 1000;
+  min-width: 200px; /* подберите под свой макет */
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+}
+
 
 /* Адаптив для мобильных устройств */
 @media (max-width: 480px) {
-  @media (max-width: 480px) {
   .userProfile {
-    width: auto;
     height: 36px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
     gap: 0;
   }
-}
-
   .profileData {
-    display: none; /* скрываем имя */
+    display: none; /* на мобильных скрываем имя */
   }
-
-
-
+  .arrowIcon {
+    display: none;
+  }
   .profileIcon {
     width: 36px;
     height: 36px;
   }
-
   .profileIcon img {
     width: 36px;
     height: 36px;
+  }
+  .dropdown {
+    display: none; /* на мобильных не показываем выпадающее меню */
   }
 }

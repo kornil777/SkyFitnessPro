@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+// src/components/UserProfile/UserProfile.tsx
+
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProfileModal from '../ProfileModal/ProfileModal';
 import styles from './UserProfile.module.css';
@@ -20,13 +22,14 @@ const UserProfile: React.FC<UserProfileProps> = ({
 }) => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const handleClick = () => {
     const isMobile = window.matchMedia('(max-width: 480px)').matches;
     if (isMobile) {
       navigate('/profile');
     } else {
-      setIsModalOpen(true);
+      setIsModalOpen(!isModalOpen);
     }
   };
 
@@ -44,13 +47,23 @@ const UserProfile: React.FC<UserProfileProps> = ({
     if (onLogout) onLogout();
   };
 
-  const handleAddCourse = () => {
-    setIsModalOpen(false);
-    if (onAddCourse) onAddCourse();
-  };
+  // Закрытие при клике вне модалки (опционально)
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsModalOpen(false);
+      }
+    };
+    if (isModalOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isModalOpen]);
 
   return (
-    <>
+    <div className={styles.userProfileWrapper} ref={containerRef}>
       <div className={styles.userProfile} onClick={handleClick}>
         <div className={styles.profileIcon}>
           <img src="images/prof.svg" alt="Profile" />
@@ -59,15 +72,19 @@ const UserProfile: React.FC<UserProfileProps> = ({
         <div className={styles.arrowIcon} />
       </div>
 
-      <ProfileModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        userName={userName}
-        userEmail={userEmail}
-        onProfileClick={handleProfileClick}
-        onLogout={handleLogout}
-      />
-    </>
+      {isModalOpen && (
+        <div className={styles.dropdown}>
+          <ProfileModal
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            userName={userName}
+            userEmail={userEmail}
+            onProfileClick={handleProfileClick}
+            onLogout={handleLogout}
+          />
+        </div>
+      )}
+    </div>
   );
 };
 

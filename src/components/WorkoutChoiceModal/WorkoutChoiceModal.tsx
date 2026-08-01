@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { getCourseWorkouts } from '../../api/workouts';
+import { getCourseProgress } from '../../api/progress';
 import type { Workout } from '../../types/course.types';
 import styles from './WorkoutChoiceModal.module.css';
 import Loader from '../Loader/Loader';
@@ -15,37 +16,49 @@ const WorkoutChoiceModal: React.FC<WorkoutChoiceModalProps> = ({ courseId, onClo
   const navigate = useNavigate();
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(null);
+  const [completedWorkoutIds, setCompletedWorkoutIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadWorkouts = async () => {
+    const loadData = async () => {
       try {
-        const data = await getCourseWorkouts(courseId);
-        const sorted = data.sort((a, b) => {
+        const [workoutsData, progressData] = await Promise.all([
+          getCourseWorkouts(courseId),
+          getCourseProgress(courseId).catch(() => null),
+        ]);
+
+        // Сортировка
+        const sorted = workoutsData.sort((a, b) => {
           const numA = extractNumber(a.name);
           const numB = extractNumber(b.name);
           return numA - numB;
         });
         setWorkouts(sorted);
+
+        // Определяем завершённые тренировки
+        if (progressData && progressData.workoutsProgress) {
+          const completedIds = progressData.workoutsProgress
+            .filter(w => w.workoutCompleted === true)
+            .map(w => w.workoutId);
+          setCompletedWorkoutIds(completedIds);
+        }
+
         if (sorted.length > 0) {
           setSelectedWorkoutId(sorted[0]._id);
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Ошибка загрузки тренировок');
+        setError(err instanceof Error ? err.message : 'Ошибка загрузки данных');
       } finally {
         setLoading(false);
       }
     };
-    loadWorkouts();
+    loadData();
   }, [courseId]);
 
   const extractNumber = (name: string): number => {
     const match = name.match(/\d+/);
-    if (match) {
-      return parseInt(match[0], 10);
-    }
-    return Infinity;
+    return match ? parseInt(match[0], 10) : Infinity;
   };
 
   const handleSelect = (workoutId: string) => {
@@ -92,15 +105,16 @@ const WorkoutChoiceModal: React.FC<WorkoutChoiceModalProps> = ({ courseId, onClo
           {workouts.map((workout) => {
             const { title, subtitle } = splitWorkoutName(workout.name);
             const isSelected = selectedWorkoutId === workout._id;
+            const isCompleted = completedWorkoutIds.includes(workout._id);
             return (
               <li
                 key={workout._id}
-                className={`${styles.item} ${isSelected ? styles.selected : ''}`}
+                className={`${styles.item} ${isSelected ? styles.selected : ''} ${isCompleted ? styles.completed : ''}`}
                 onClick={() => handleSelect(workout._id)}
               >
                 <div className={styles.iconWrapper}>
                   <div className={styles.circle}>
-                    {isSelected && (
+                    {isCompleted && (
                       <img
                         src="images/check.svg"
                         alt="✓"
@@ -113,6 +127,7 @@ const WorkoutChoiceModal: React.FC<WorkoutChoiceModalProps> = ({ courseId, onClo
                   <span className={styles.titleText}>{title}</span>
                   {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
                 </div>
+                
               </li>
             );
           })}

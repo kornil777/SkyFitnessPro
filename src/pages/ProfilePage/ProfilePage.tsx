@@ -3,16 +3,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { fetchUserData } from '../../api/purchases';
+import { fetchUserData, removeCourseFromUser } from '../../api/purchases';
 import { fetchCourses } from '../../api/courses';
 import { getCourseProgress } from '../../api/progress';
-import DeleteIcon from '../../components/DeleteIcon/DeleteIcon';
+import Icon from '../../components/Icon/Icon';
 import WorkoutChoiceModal from '../../components/WorkoutChoiceModal/WorkoutChoiceModal';
 import { getCourseImage } from '../../utils/imageMap';
 import type { Course } from '../../types/course.types';
 import styles from './ProfilePage.module.css';
 import Loader from '../../components/Loader/Loader';
 import Header from '../../components/Header/Header';
+import Toast from '../../components/Toast/Toast';
 
 interface CourseWithProgress extends Course {
   progress: number;
@@ -31,71 +32,65 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
   const [loading, setLoading] = useState(true);
   const [showWorkoutChoice, setShowWorkoutChoice] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadUserCourses = async () => {
-      if (!user) {
+  const loadUserCourses = async () => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+    try {
+      const userData = await fetchUserData();
+      const courseIds = userData.selectedCourses || [];
+
+      if (courseIds.length === 0) {
+        setCourses([]);
         setLoading(false);
         return;
       }
-      try {
-        const userData = await fetchUserData();
-        const courseIds = userData.selectedCourses || [];
-        
-        if (courseIds.length === 0) {
-          setCourses([]);
-          setLoading(false);
-          return;
+
+      const allCourses = await fetchCourses();
+      const userCourses = allCourses.filter(course =>
+        courseIds.includes(course._id)
+      );
+
+      const coursesWithProgressPromises = userCourses.map(async (course) => {
+        let progress = 0;
+        try {
+          const progressData = await getCourseProgress(course._id);
+          const totalWorkouts = course.workouts?.length || 0;
+
+          if (progressData && progressData.workoutsProgress && totalWorkouts > 0) {
+            let completedWorkouts = 0;
+            progressData.workoutsProgress.forEach(w => {
+              if (w.workoutCompleted) completedWorkouts++;
+            });
+            progress = Math.round((completedWorkouts / totalWorkouts) * 100);
+          }
+        } catch {
+          progress = 0;
         }
 
-        const allCourses = await fetchCourses();
-        const userCourses = allCourses.filter(course => 
-          courseIds.includes(course._id)
-        );
+        const buttonText = progress > 0 ? 'Продолжить' : 'Начать тренировки';
 
-        const coursesWithProgressPromises = userCourses.map(async (course) => {
-          let progress = 0;
-          try {
-            const progressData = await getCourseProgress(course._id);
-            if (progressData && progressData.workoutsProgress) {
-              const workouts = progressData.workoutsProgress;
-              let totalProgress = 0;
-              workouts.forEach((w) => {
-                if (w.progressData && w.progressData.length > 0) {
-                  const avg = w.progressData.reduce((a, b) => a + b, 0) / w.progressData.length;
-                  totalProgress += avg;
-                }
-                if (w.workoutCompleted) {
-                  totalProgress += 100;
-                }
-              });
-              if (workouts.length > 0) {
-                const avgProgress = totalProgress / workouts.length;
-                progress = Math.min(Math.round(avgProgress), 100);
-              }
-            }
-          } catch {
-            progress = 0;
-          }
+        return {
+          ...course,
+          progress,
+          buttonText,
+          isDeleted: false,
+        };
+      });
 
-          const buttonText = progress > 0 ? 'Продолжить' : 'Начать тренировки';
+      const coursesWithProgress = await Promise.all(coursesWithProgressPromises);
+      setCourses(coursesWithProgress);
+    } catch (error) {
+      console.error('Failed to load user courses:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-          return {
-            ...course,
-            progress,
-            buttonText,
-            isDeleted: false,
-          };
-        });
-
-        const coursesWithProgress = await Promise.all(coursesWithProgressPromises);
-        setCourses(coursesWithProgress);
-      } catch (error) {
-        console.error('Failed to load user courses:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  useEffect(() => {
     loadUserCourses();
   }, [user]);
 
@@ -104,10 +99,17 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
     navigate('/');
   };
 
-  const handleDeleteCourse = (courseId: string) => {
-    setCourses(prev =>
-      prev.map(c => c._id === courseId ? { ...c, isDeleted: !c.isDeleted } : c)
-    );
+  const handleToggleCourse = async (courseId: string) => {
+    try {
+      await removeCourseFromUser(courseId);
+      setToastMessage('Курс удалён из ваших тренировок');
+      await loadUserCourses();
+      setTimeout(() => setToastMessage(null), 3000);
+    } catch (error) {
+      console.error('Ошибка при удалении курса:', error);
+      setToastMessage('Произошла ошибка, попробуйте позже');
+      setTimeout(() => setToastMessage(null), 3000);
+    }
   };
 
   const handleStartTraining = (course: CourseWithProgress) => {
@@ -127,7 +129,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
   return (
     <div className={styles.page}>
       <Header openAuthModal={openAuthModal} />
-      
+
       <div className={styles.contentBlock}>
         <h1 className={styles.profileTitle}>Профиль</h1>
 
@@ -161,14 +163,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
                       alt={course.nameRU}
                       className={styles.courseImage}
                       onError={(e) => {
-                        e.currentTarget.src = '/images/card1.svg';
+                        e.currentTarget.src = 'images/card1.svg';
                       }}
                     />
-                    <DeleteIcon
-                      isDeleted={course.isDeleted || false}
+                    <Icon
+                      isAdded={true}
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDeleteCourse(course._id);
+                        handleToggleCourse(course._id);
                       }}
                     />
                   </div>
@@ -200,13 +202,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
         </div>
       </div>
 
-      {/* Модалка выбора тренировки */}
       {showWorkoutChoice && selectedCourseId && (
         <WorkoutChoiceModal
           courseId={selectedCourseId}
           onClose={handleCloseWorkoutChoice}
         />
       )}
+
+      {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage(null)} duration={3000} />}
     </div>
   );
 };

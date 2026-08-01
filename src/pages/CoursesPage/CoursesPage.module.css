@@ -41,43 +41,85 @@
   object-fit: contain;
 }
 
+/* Гибкая сетка на flex-wrap */
 .coursesGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+  display: flex;
+  flex-wrap: wrap;
+   gap: 30px;
   width: 100%;
 }
 
-/* Адаптив для мобильных устройств 375px */
+.coursesGrid > * {
+  flex: 0 0 calc(33.333% - 20px); /* 3 колонки с учётом gap */
+  max-width: calc(33.333% - 20px);
+  min-width: 360px; /* минимальная ширина карточки */
+}
+
+/* Планшеты и маленькие десктопы (1024px) */
+@media (max-width: 1024px) {
+  .page {
+    padding: 0 40px;
+  }
+  .title {
+    font-size: 48px;
+  }
+  .coursesGrid {
+    gap: 20px;
+    justify-content: center;
+  }
+  .coursesGrid > * {
+    flex: 0 0 calc(50% - 10px);
+    max-width: calc(50% - 10px);
+  }
+}
+
+/* Планшеты (768px) */
+@media (max-width: 768px) {
+  .page {
+    padding: 0 24px;
+  }
+  .title {
+    font-size: 40px;
+  }
+  .coursesGrid {
+    gap: 20px;
+  }
+  .coursesGrid > * {
+    flex: 0 0 calc(50% - 10px);
+    max-width: calc(50% - 10px);
+  }
+  .greenBlock {
+    width: 200px;
+    height: auto;
+  }
+}
+
+/* Мобильные устройства (480px) */
 @media (max-width: 480px) {
   .page {
     padding: 0 16px;
   }
-
   .subtitle {
     display: none;
   }
-
   .title {
     font-size: 32px;
     line-height: 110%;
-    
   }
-
   .greenBlock {
     display: none;
   }
-
   .coursesGrid {
-    grid-template-columns: 1fr;
     gap: 20px;
-    justify-items: center;
+    justify-content: center;
   }
-
+  .coursesGrid > * {
+    flex: 0 0 100%;
+    max-width: 100%;
+    min-width: unset;
+  }
   .content {
     gap: 24px;
     padding: 12px 0 40px;
   }
-
-
 }

@@ -248,7 +248,7 @@
   opacity: 0.6;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 955px) {
   .page {
     padding: 0 16px;
   }

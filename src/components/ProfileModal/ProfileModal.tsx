@@ -1,13 +1,15 @@
-import React from "react";
-import styles from "./ProfileModal.module.css";
+// src/components/ProfileModal/ProfileModal.tsx
+
+import React from 'react';
+import styles from './ProfileModal.module.css';
 
 interface ProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
   userName: string;
   userEmail: string;
-  onProfileClick?: () => void;
-  onLogout?: () => void;
+  onProfileClick: () => void;
+  onLogout: () => void;
 }
 
 const ProfileModal: React.FC<ProfileModalProps> = ({
@@ -20,35 +22,29 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
+  const handleProfileClick = () => {
+    onProfileClick();
+    onClose();
   };
 
-  const handleLogoutClick = () => {
-    if (onLogout) {
-      onLogout();
-      onClose();
-    }
+  const handleLogout = () => {
+    onLogout();
+    onClose();
   };
 
   return (
-    <div className={styles.modalOverlay} onClick={handleOverlayClick}>
-      <div className={styles.modalContainer}>
-        <div className={styles.userInfoContainer}>
-          <div className={styles.userName}>{userName}</div>
-          <div className={styles.userEmail}>{userEmail}</div>
-        </div>
-
-        <div className={styles.buttonsContainer}>
-          <button className={styles.profileButton} onClick={onProfileClick}>
-            Профиль
-          </button>
-          <button className={styles.logoutButton} onClick={handleLogoutClick}>
-            Выйти
-          </button>
-        </div>
+    <div className={styles.modalContainer}>
+      <div className={styles.userInfoContainer}>
+        <span className={styles.userName}>{userName}</span>
+        <span className={styles.userEmail}>{userEmail}</span>
+      </div>
+      <div className={styles.buttonsContainer}>
+        <button className={styles.profileButton} onClick={handleProfileClick}>
+          Профиль
+        </button>
+        <button className={styles.logoutButton} onClick={handleLogout}>
+          Выйти
+        </button>
       </div>
     </div>
   );
