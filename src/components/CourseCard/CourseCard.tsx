@@ -1,5 +1,3 @@
-// src/components/CourseCard/CourseCard.tsx
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Course } from '../../types/course.types';
@@ -9,8 +7,9 @@ import styles from './CourseCard.module.css';
 interface CourseCardProps {
   course: Course;
   isAuthenticated?: boolean;
-  isAdded?: boolean;           // добавлен ли курс у пользователя
-  onToggle?: (courseId: string) => void; // колбэк при клике на иконку
+  isAdded?: boolean;
+  onToggle?: (courseId: string) => void;
+  openAuthModal?: () => void; // новый проп
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({
@@ -18,6 +17,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   isAuthenticated = false,
   isAdded = false,
   onToggle,
+  openAuthModal,
 }) => {
   const navigate = useNavigate();
 
@@ -26,11 +26,9 @@ const CourseCard: React.FC<CourseCardProps> = ({
   };
 
   const handleIconClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // не даём сработать клику по карточке
+    e.stopPropagation();
     if (!isAuthenticated) {
-      // Если не авторизован – можно показать уведомление или открыть модалку
-      // Для простоты покажем alert (позже заменим на Toast)
-      alert('Войдите, чтобы добавить курс');
+      if (openAuthModal) openAuthModal();
       return;
     }
     if (onToggle) {
@@ -38,7 +36,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
     }
   };
 
-  // маппинг картинок (как было)
   const imageMap: Record<string, string> = {
     'Йога': 'ioga.svg',
     'Стретчинг': 'strech.svg',
@@ -48,6 +45,8 @@ const CourseCard: React.FC<CourseCardProps> = ({
   };
   const imageFile = imageMap[course.nameRU] || 'card1.svg';
   const imageUrl = `images/${imageFile}`;
+
+  const tooltipText = isAdded ? 'Удалить курс' : 'Добавить курс';
 
   return (
     <div className={styles.card} onClick={handleCardClick}>
@@ -60,7 +59,9 @@ const CourseCard: React.FC<CourseCardProps> = ({
             e.currentTarget.style.background = '#D9D9D9';
           }}
         />
-        <Icon isAdded={isAdded} onClick={handleIconClick} />
+        <div title={tooltipText}>
+          <Icon isAdded={isAdded} onClick={handleIconClick} />
+        </div>
       </div>
       <div className={styles.contentContainer}>
         <h3 className={styles.title}>{course.nameRU}</h3>
@@ -74,4 +75,4 @@ const CourseCard: React.FC<CourseCardProps> = ({
   );
 };
 
-export default CourseCard;  
+export default CourseCard;

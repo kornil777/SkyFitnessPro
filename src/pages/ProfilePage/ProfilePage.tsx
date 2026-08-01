@@ -1,19 +1,19 @@
 // src/pages/ProfilePage/ProfilePage.tsx
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { fetchUserData, removeCourseFromUser } from '../../api/purchases';
-import { fetchCourses } from '../../api/courses';
-import { getCourseProgress } from '../../api/progress';
-import Icon from '../../components/Icon/Icon';
-import WorkoutChoiceModal from '../../components/WorkoutChoiceModal/WorkoutChoiceModal';
-import { getCourseImage } from '../../utils/imageMap';
-import type { Course } from '../../types/course.types';
-import styles from './ProfilePage.module.css';
-import Loader from '../../components/Loader/Loader';
-import Header from '../../components/Header/Header';
-import Toast from '../../components/Toast/Toast';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { fetchUserData, removeCourseFromUser } from "../../api/purchases";
+import { fetchCourses } from "../../api/courses";
+import { getCourseProgress } from "../../api/progress";
+import Icon from "../../components/Icon/Icon";
+import WorkoutChoiceModal from "../../components/WorkoutChoiceModal/WorkoutChoiceModal";
+import { getCourseImage } from "../../utils/imageMap";
+import type { Course } from "../../types/course.types";
+import styles from "./ProfilePage.module.css";
+import Loader from "../../components/Loader/Loader";
+import Header from "../../components/Header/Header";
+import Toast from "../../components/Toast/Toast";
 
 interface CourseWithProgress extends Course {
   progress: number;
@@ -50,8 +50,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
       }
 
       const allCourses = await fetchCourses();
-      const userCourses = allCourses.filter(course =>
-        courseIds.includes(course._id)
+      const userCourses = allCourses.filter((course) =>
+        courseIds.includes(course._id),
       );
 
       const coursesWithProgressPromises = userCourses.map(async (course) => {
@@ -60,9 +60,13 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
           const progressData = await getCourseProgress(course._id);
           const totalWorkouts = course.workouts?.length || 0;
 
-          if (progressData && progressData.workoutsProgress && totalWorkouts > 0) {
+          if (
+            progressData &&
+            progressData.workoutsProgress &&
+            totalWorkouts > 0
+          ) {
             let completedWorkouts = 0;
-            progressData.workoutsProgress.forEach(w => {
+            progressData.workoutsProgress.forEach((w) => {
               if (w.workoutCompleted) completedWorkouts++;
             });
             progress = Math.round((completedWorkouts / totalWorkouts) * 100);
@@ -71,7 +75,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
           progress = 0;
         }
 
-        const buttonText = progress > 0 ? 'Продолжить' : 'Начать тренировки';
+        const buttonText = progress > 0 ? "Продолжить" : "Начать тренировки";
 
         return {
           ...course,
@@ -81,10 +85,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
         };
       });
 
-      const coursesWithProgress = await Promise.all(coursesWithProgressPromises);
+      const coursesWithProgress = await Promise.all(
+        coursesWithProgressPromises,
+      );
       setCourses(coursesWithProgress);
     } catch (error) {
-      console.error('Failed to load user courses:', error);
+      console.error("Failed to load user courses:", error);
     } finally {
       setLoading(false);
     }
@@ -96,18 +102,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
 
   const handleToggleCourse = async (courseId: string) => {
     try {
       await removeCourseFromUser(courseId);
-      setToastMessage('Курс удалён из ваших тренировок');
+      setToastMessage("Курс удалён из ваших тренировок");
       await loadUserCourses();
       setTimeout(() => setToastMessage(null), 3000);
     } catch (error) {
-      console.error('Ошибка при удалении курса:', error);
-      setToastMessage('Произошла ошибка, попробуйте позже');
+      console.error("Ошибка при удалении курса:", error);
+      setToastMessage("Произошла ошибка, попробуйте позже");
       setTimeout(() => setToastMessage(null), 3000);
     }
   };
@@ -122,7 +128,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
     setSelectedCourseId(null);
   };
 
-  const userLogin = user?.email ? user.email.split('@')[0] : '';
+  const userLogin = user?.email ? user.email.split("@")[0] : "";
 
   if (loading) return <Loader fullPage />;
 
@@ -139,9 +145,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
               <img src="images/Mask.svg" alt="Profile" />
             </div>
             <div className={styles.profileInfo}>
-              <h2 className={styles.profileName}>{user?.name || ''}</h2>
+              <h2 className={styles.profileName}>{user?.name || ""}</h2>
               <p className={styles.profileLogin}>Логин: {userLogin}</p>
-              <button className={styles.logoutButton} onClick={handleLogout}>Выйти</button>
+              <button className={styles.logoutButton} onClick={handleLogout}>
+                Выйти
+              </button>
             </div>
           </div>
         </div>
@@ -155,7 +163,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
               courses.map((course) => (
                 <div
                   key={course._id}
-                  className={`${styles.courseCard} ${course.isDeleted ? styles.deletedCourse : ''}`}
+                  className={`${styles.courseCard} ${course.isDeleted ? styles.deletedCourse : ""}`}
                 >
                   <div className={styles.imageContainer}>
                     <img
@@ -163,32 +171,51 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
                       alt={course.nameRU}
                       className={styles.courseImage}
                       onError={(e) => {
-                        e.currentTarget.src = 'images/card1.svg';
+                        e.currentTarget.src = "images/card1.svg";
                       }}
                     />
-                    <Icon
-                      isAdded={true}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleToggleCourse(course._id);
-                      }}
-                    />
+                    <div title="Удалить курс">
+                      <Icon
+                        isAdded={true}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleCourse(course._id);
+                        }}
+                      />
+                    </div>
                   </div>
                   <div className={styles.courseContent}>
                     <h3 className={styles.courseTitle}>{course.nameRU}</h3>
                     <div className={styles.iconsRow}>
-                      <img src="images/25day.svg" alt="25 дней" className={styles.daysIcon} />
-                      <img src="images/20min.svg" alt="20-50 мин/день" className={styles.timeIcon} />
+                      <img
+                        src="images/25day.svg"
+                        alt="25 дней"
+                        className={styles.daysIcon}
+                      />
+                      <img
+                        src="images/20min.svg"
+                        alt="20-50 мин/день"
+                        className={styles.timeIcon}
+                      />
                     </div>
-                    <img src="images/mult.svg" alt="Сложность" className={styles.difficultyIcon} />
+                    <img
+                      src="images/mult.svg"
+                      alt="Сложность"
+                      className={styles.difficultyIcon}
+                    />
                     <div className={styles.progressSection}>
-                      <p className={styles.progressText}>Прогресс {course.progress || 0}%</p>
+                      <p className={styles.progressText}>
+                        Прогресс {course.progress || 0}%
+                      </p>
                       <div className={styles.progressBarBg}>
-                        <div className={styles.progressBarFill} style={{ width: `${course.progress || 0}%` }} />
+                        <div
+                          className={styles.progressBarFill}
+                          style={{ width: `${course.progress || 0}%` }}
+                        />
                       </div>
                     </div>
                     <button
-                      className={`${styles.courseButton} ${course.isDeleted ? styles.disabledButton : ''}`}
+                      className={`${styles.courseButton} ${course.isDeleted ? styles.disabledButton : ""}`}
                       onClick={() => handleStartTraining(course)}
                       disabled={course.isDeleted}
                     >
@@ -209,7 +236,13 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ openAuthModal }) => {
         />
       )}
 
-      {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage(null)} duration={3000} />}
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          onClose={() => setToastMessage(null)}
+          duration={3000}
+        />
+      )}
     </div>
   );
 };

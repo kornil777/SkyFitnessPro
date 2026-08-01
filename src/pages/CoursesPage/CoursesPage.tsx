@@ -96,6 +96,7 @@ const CoursesPage: React.FC<CoursesPageProps> = ({ openAuthModal }) => {
               isAuthenticated={isAuthenticated}
               isAdded={addedCourseIds.includes(course._id)}
               onToggle={handleToggleCourse}
+              openAuthModal={openAuthModal} 
             />
           ))}
         </div>
